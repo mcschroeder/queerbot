@@ -1,5 +1,4 @@
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 class Model {  
   final Section[] sections;
@@ -21,7 +20,7 @@ class Model {
         Ingredient ingredient = ingredients[j];
         if (ingredient == null) {
           String ingredientName = row.getString("name");
-          ingredient = new Ingredient(j, ingredientName);
+          ingredient = new Ingredient(this, j, ingredientName);
           ingredient.displayOnRightSide = row.getString("side").equals("R");
         }
         ingredients[j] = ingredient;
@@ -49,13 +48,7 @@ class Model {
 class Section {
   final Model model;
   final int index;  
-  final String name;
-  
-  final int width;
-  final int leftX;
-  final int centerX;
-  final int rightX;
-  
+  final String name;    
   final Map<Ingredient,Float> significantAmounts = new HashMap();  
   int count = 0;  // how often was this section selected
   boolean covered = true;
@@ -64,21 +57,19 @@ class Section {
     this.model = model;
     this.index = index;
     this.name = name;
-    this.width = CANVAS_WIDTH/model.sections.length;
-    this.leftX = (int)map(index, 0, model.sections.length-1, CANVAS_LEFT, CANVAS_RIGHT-width);
-    this.centerX = leftX + width/2;
-    this.rightX = leftX + width;
   }
 }
 
 class Ingredient {
+  final Model model;
   final int index;
   final String name;
   
   boolean displayOnRightSide = false;
-  float level = 0;  // 0-1
+  float fillLevel = 0;  // 0-1
   
-  Ingredient(int index, String name) {
+  Ingredient(Model model, int index, String name) {
+    this.model = model;
     this.index = index;
     this.name = name;
   }
