@@ -37,6 +37,7 @@ class Model {
   }
     
   Selection update(Selection selection1, Selection selection2) {
+    println("UPDATING MODEL: " + selection1 + " " + selection2);
     // TODO: calculate result selection based on input selections (MF -> Q etc)
     // TODO: update counts (with cap)
     // TODO: un/cover sections based on counts    
@@ -71,12 +72,18 @@ class Model {
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 class Selection {
   final Section section;
-  final Map<Ingredient,Float> amounts;
+  final float[] amounts;  // one amount per ingredient
   
-  public Selection(Section section, Map<Ingredient,Float> amounts) {
+  public Selection(Section section, float[] amounts) {
     this.section = section;
     this.amounts = amounts;
+  }
+  
+  String toString() {
+    return section.name;
   }
 }

@@ -51,4 +51,8 @@ class Section {
     text(name, centerX, CANVAS_BOTTOM + 33);    
   }
 
+  float[] getAmounts(int x) {
+    // TODO: get exact amounts at x
+    return significantAmounts;
+  }
 }

@@ -18,7 +18,9 @@ final color[] INGREDIENT_COLORS = {
 
 // variables
 Model model;
-Cursor cursor;
+Cursor cursor1;
+Cursor cursor2;
+Cursor activeCursor;
 
 void settings() {
   size(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -27,7 +29,10 @@ void settings() {
 void setup() {
   ellipseMode(CENTER);
   model = new Model("ingredients.csv");
-  cursor = new Cursor(model);
+  cursor1 = new Cursor(model);
+  cursor2 = new Cursor(model);
+  cursor2.hidden = true;
+  activeCursor = cursor1;
 }
 
 void draw() {
@@ -47,7 +52,9 @@ void draw() {
     section.drawLabel();
   }
   drawCanvas();
-  cursor.draw();
+
+  cursor1.draw();
+  cursor2.draw();
 }
 
 void clipCanvas() {
@@ -67,7 +74,9 @@ void drawCanvas() {
 }
 
 void mouseMoved() {
-  cursor.update(mouseX);
+  if (activeCursor != null) {
+    activeCursor.update(mouseX);
+  }
 }
 
 void keyPressed() {
@@ -79,9 +88,21 @@ void keyPressed() {
 }
 
 void select() {
-  
+  if (cursor1 == activeCursor) {
+    activeCursor = cursor2;
+    cursor2.hidden = false;
+  } else if (cursor2 == activeCursor) {
+    activeCursor = null;
+  } else if (activeCursor == null) {
+    activeCursor = cursor1;
+    cursor2.hidden = true;
+  }
+  mouseMoved();
 }
 
 void confirm() {
-  
+  activeCursor = null;
+  Selection selection1 = cursor1.getSelection();
+  Selection selection2 = cursor2.hidden ? null : cursor2.getSelection();  
+  model.update(selection1, selection2);
 }

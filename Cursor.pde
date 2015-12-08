@@ -8,7 +8,7 @@ class Cursor {
   
   // variables
   int x = 0;
-  boolean ghost = false;
+  boolean hidden = false;
     
   Cursor(Model model) {
     this.hand = loadImage("hand.jpg");
@@ -22,22 +22,21 @@ class Cursor {
   }
   
   void draw() {
+    if (hidden) return;
     strokeWeight(1);
-    if (ghost) {
-      stroke(255,0,0,126);
-    } else {
-      stroke(255,0,0);
-    }
+    stroke(255,0,0);
     line(x, CANVAS_TOP, x, CANVAS_BOTTOM);  
     imageMode(CENTER);
-    if (ghost) {
-      tint(255,126);
-    }
     image(hand, x, CANVAS_BOTTOM + (hand.height/2) + 50);    
   }
   
   Selection getSelection() {
-    // TODO
+    for (Section section : model.sections) {
+      if (x >= section.leftX && x <= section.rightX) {
+        float[] amounts = section.getAmounts(x);
+        return new Selection(section, amounts);
+      }
+    }
     return null;
   }  
 }
