@@ -28,6 +28,11 @@ class Section {
   void drawBackground() {
     if (highlighted) {
       noStroke();
+      fill(100,100,200,80);
+      rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);      
+    }    
+    if (selected) {
+      noStroke();
       fill(100,100,200,127);
       rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);      
     }
@@ -42,13 +47,18 @@ class Section {
   }
   
   void drawLabel() {
-    if (covered) {
+    if (covered && !DEBUG) {
       return;
     }
     fill(255);
     textSize(24);
-    textAlign(LEFT,BASELINE);
-    text(name, centerX, CANVAS_BOTTOM + 33);    
+    textAlign(CENTER,BASELINE);
+    text(name, centerX, CANVAS_BOTTOM + 33);
+    
+    fill(255,0,0);
+    textSize(20);
+    textAlign(CENTER,BASELINE);
+    text(count, centerX, CANVAS_BOTTOM + 33 + 24 + 10);
   }
 
   float[] getAmounts(int x) {

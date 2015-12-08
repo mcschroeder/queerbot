@@ -1,22 +1,30 @@
 import java.util.*;
 
+final int SELECTION_HISTORY_SIZE = 10;
+
 class Model {
   
-  // constants
+  // constants  
   final Section[] sections;
+  final Map<String,Section> sectionsByName;
   final Ingredient[] ingredients;
+  final List<InputRule> inputRules;
+  final List<CoverRule> coverRules;
   
   // variables
   Set<Range> rangesForUncoveredSections;
+  final Deque<Selection> drinkHistory = new LinkedList();
     
-  public Model(String file) {    
-    Table table = loadTable(file, "header");
+  public Model(String ingredientsFile, String inputRulesFile, String coverRulesFile) {    
+    Table table = loadTable(ingredientsFile, "header");
     table.trim();
     
     sections = new Section[table.getColumnCount()-2];
+    sectionsByName = new HashMap();
     ingredients = new Ingredient[table.getRowCount()];    
     for (int i = 0; i < sections.length; i++) {
       sections[i] = new Section(i, table.getColumnTitle(i), sections.length, ingredients.length);
+      sectionsByName.put(sections[i].name, sections[i]);
       for (int j = 0; j < ingredients.length; j++) {
         TableRow row = table.getRow(j);
         sections[i].significantAmounts[j] = row.getFloat(i);
@@ -27,22 +35,70 @@ class Model {
         ingredients[j].updateSignificantPoints(sections[i]);
       }
     }
+    
+    this.inputRules = loadInputRules(inputRulesFile, sectionsByName);
+    this.coverRules = loadCoverRules(coverRulesFile, sectionsByName);
 
-    // TODO: remove
-    sections[1].covered = false;
-    sections[3].covered = false;
-    sections[4].covered = false;
+    sections[0].covered = false;
+    sections[sections.length-1].covered = false;
     
     updateRangesForUncoveredSections();
   }
-    
+
   Selection update(Selection selection1, Selection selection2) {
-    println("UPDATING MODEL: " + selection1 + " " + selection2);
-    // TODO: calculate result selection based on input selections (MF -> Q etc)
-    // TODO: update counts (with cap)
-    // TODO: un/cover sections based on counts    
+    println("UPDATING MODEL WITH SELECTION: " + selection1 + "," + selection2);
+    assert (selection1 != null);
+    Selection result;
+    if (selection2 == null) {
+      selection1.section.count += 1;
+      result = selection1;
+    } else {
+      Section[] selectedSections = {selection1.section, selection2.section};
+      InputRule inputRule = firstMatchingInputRule(selectedSections, inputRules);      
+      if (inputRule == null) {
+        println("NO INPUT RULE FOUND. TALLYING EACH AND RETURNING HYBRID.");
+        selection1.section.count += 1;
+        selection2.section.count += 1;
+        // TODO: which section to choose for hybrid result?
+        result = selection1;  // TODO: hybrid
+      } else {
+        println("USING INPUT RULE: " + inputRule);
+        if (inputRule.tally1 != null) inputRule.tally1.count++;
+        if (inputRule.tally2 != null) inputRule.tally2.count++;
+        if (inputRule.out == null) {
+          // TODO: which section to choose for hybrid result?
+          result = selection1;  // TODO: hybrid
+        } else {
+          result = new Selection(inputRule.out, inputRule.out.significantAmounts);
+        }        
+      }
+    }
+    
+    rememberDrink(result);
+    
+    Section[] history = new Section[drinkHistory.size()];
+    int i = 0;
+    for (Selection selection : drinkHistory) {
+      history[i++] = selection.section;
+    }
+    CoverRule coverRule = firstMatchingCoverRule(history, coverRules);
+    if (coverRule != null) {
+      println("FOUND MATCHING COVER RULE: " + coverRule);
+      coverRule.conclusion.covered = !coverRule.uncover;
+    }    
+    
+    updateRangesForUncoveredSections();
+    
     // TODO: update the traits based on ???
-    return null;
+    
+    return result;
+  }
+  
+  void rememberDrink(Selection drink) {
+    if (drinkHistory.size() >= SELECTION_HISTORY_SIZE) {
+      drinkHistory.removeLast();
+    }
+    drinkHistory.addFirst(drink);
   }
   
   void updateRangesForUncoveredSections() {
@@ -71,6 +127,14 @@ class Model {
     this.rangesForUncoveredSections = ranges;
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

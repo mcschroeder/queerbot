@@ -1,0 +1,15 @@
+M,M -> M,M -> M
+Y,Y -> M   -> Y
+Q,Q -> X,Y -> Q
+X,X -> F   -> X
+F,F -> F,F -> F
+M,Y ->     -> hybrid
+Y,Q -> Y   -> hybrid
+Q,X -> X   -> hybrid
+X,F ->     -> hybrid
+M,F -> Q,Q -> Q
+M,Q -> Y   -> Y
+Y,X -> Q   -> Q
+Q,F -> X   -> X
+X,M -> Q   -> Q
+F,Y -> Q   -> Q

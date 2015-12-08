@@ -51,6 +51,7 @@ class Ingredient {
   
   void drawLabel() {
     fill(this.strokeColor);
+    textSize(24);
     textAlign(LEFT,BASELINE);
     float x,y;
     if (displayOnRightSide) {
