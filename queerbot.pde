@@ -1,4 +1,7 @@
-final boolean DEBUG = true;
+import processing.serial.*;
+
+final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = true;
+final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
 
 // constants
 final int SCREEN_WIDTH = 720;
@@ -95,6 +98,9 @@ void draw() {
   text(history, 0, SCREEN_HEIGHT-(textAscent()+textDescent()));
     
   for (Section section : model.sections) {
+    if (section.covered && !DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS) {
+      continue;
+    }
     float count = 0;
     for (Section hs : historySections) {
       if (hs == section) count++; 

@@ -47,7 +47,7 @@ class Section {
   }
   
   void drawLabel() {
-    if (covered && !DEBUG) {
+    if (covered && !DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS) {
       return;
     }
     fill(255);
