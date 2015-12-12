@@ -137,7 +137,7 @@ class Selection {
   public Selection(Section section, float[] amounts) {
     this.section = section;
     this.amounts = amounts;
-  }
+  }  
   
   String toString() {
     return section.name;

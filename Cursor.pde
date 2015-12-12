@@ -16,9 +16,9 @@ class Cursor {
     update(0);
   }  
   
-  void update(int pos) {
-    x = clamp(pos, CANVAS_LEFT, CANVAS_RIGHT);
-    x = clampToRanges(x, model.rangesForUncoveredSections);
+  void update(int x) {
+    x = clamp(x, CANVAS_LEFT, CANVAS_RIGHT);
+    this.x = clampToRanges(x, model.rangesForUncoveredSections);
   }
   
   void draw() {
@@ -81,8 +81,4 @@ int clampToRanges(int x, Set<Range> ranges) {
     }
   }
   return clampedX;
-}
-
-int clamp(int n, int min, int max) {
-  return n < min ? min : n > max ? max : n;
 }
