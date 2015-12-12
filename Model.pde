@@ -39,8 +39,14 @@ class Model {
     this.inputRules = loadInputRules(inputRulesFile, sectionsByName);
     this.coverRules = loadCoverRules(coverRulesFile, sectionsByName);
 
-    sections[0].covered = false;
-    sections[sections.length-1].covered = false;
+    if (DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED) {
+      for (Section section : sections) {
+        section.covered = false;
+      }
+    } else {
+      sections[0].covered = false;
+      sections[sections.length-1].covered = false;
+    }
     
     updateRangesForUncoveredSections();
   }
