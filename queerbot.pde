@@ -1,5 +1,6 @@
 import processing.serial.*;
 
+final boolean DEBUG_SHOW_FPS = true;
 final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = true;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
 
@@ -28,10 +29,13 @@ Cursor cursor2;
 Cursor activeCursor;
 Selection activeDrink = null;
 boolean mixing = false;
+Serial port;
 
 void settings() {
   size(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
+
+final int EOL = 10;
 
 void setup() {
   ellipseMode(CENTER);
@@ -40,10 +44,41 @@ void setup() {
   cursor2 = new Cursor(model);
   cursor2.hidden = true;
   activeCursor = cursor1;
+  
+  port = new Serial(this, "/dev/ttyUSB0", 9600);
+  port.bufferUntil(EOL);
+  
+  // frameRate(1000);
+}
+
+void serialEvent(Serial port) {
+  String line = port.readString();
+  if (line == null) return;
+  line = trim(line);
+  if (line.isEmpty()) return;
+  switch (line.charAt(0)) {
+    case '#':
+      print(line);
+      break;
+    case 'A':
+      if (line.length() < 3) return;
+      float value = float(line.substring(2));
+      if (value != value) return;  // NaN check
+      moveCursor
+      break;
+  }
+}
+
+void drawFramerate() {
+  fill(255);
+  textSize(12);
+  textAlign(LEFT,TOP);
+  String fps = (int)frameRate+"";
+  text(fps, SCREEN_WIDTH-textWidth(fps)-10, 5);  
 }
 
 void draw() {  
-  background(0);  
+  background(0);    
   for (Section section : model.sections) {
     section.drawBackground();
   }
@@ -111,13 +146,26 @@ void draw() {
     textAlign(CENTER,BASELINE);
     text(percentage, section.centerX, CANVAS_BOTTOM + 100);
   }
+  
+  if (DEBUG_SHOW_FPS) {
+    drawFramerate();
+  }
+  
+  //noLoop();
+}
+
+
+// TODO: scale x
+void moveCursor(float x) {
+  if (activeCursor != null) {
+    activeCursor.update(x);
+    updateHighlightedSections();
+    //redraw();
+  }
 }
 
 void mouseMoved() {
-  if (activeCursor != null) {
-    activeCursor.update(mouseX);
-    updateHighlightedSections();
-  }
+  moveCursor(mouseX);
 }
 
 void keyPressed() {
