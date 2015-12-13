@@ -1,5 +1,3 @@
-
-
 void drawMixingInterface() {
   assert state == QueerbotState.MIXING;
   assert activeDrink != null;
@@ -25,38 +23,25 @@ void drawMixingInterface() {
   textSize(26);
   fill(0);
   textAlign(CENTER, CENTER);
-  text(msg, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);  
+  text(msg, width/2, height/2);  
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void mix() {
+void gotoMixing(Selection drink) {
   assert state == QueerbotState.SELECTING;
+  assert drink != null;
+  activeDrink = drink;
   state = QueerbotState.MIXING;
-  
-  
-  
-  
   redraw();
   
-  
   if (DEBUG_SIMULATE_HARDWARE) return;
-
-  // TODO
   
-  delay(10000);
-  endMixing();
+  // TODO: mixing
+  // TODO: timeout if no response from controller?
   
-}
-
-void endMixing() {
-  state = QueerbotState.SELECTING;
   activeDrink = null;
-  cursor1.hidden = false;
-  cursor2.hidden = true;
-  activeCursor = cursor1;
-  updateSelectedSections();
-  analogValueChanged(analogValue);
+  gotoSelecting();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

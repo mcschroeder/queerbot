@@ -1,5 +1,6 @@
 import java.util.*;
 
+// TODO: log whole history
 final int SELECTION_HISTORY_SIZE = 10;
 
 class Model {
@@ -37,8 +38,6 @@ class Model {
     for (Ingredient ingredient : ingredients) {
       ingredient.setSignificantPoints(sections);
     }
-    
-    
     
     this.inputRules = loadInputRules(inputRulesFile, sectionsByName);
     this.coverRules = loadCoverRules(coverRulesFile, sectionsByName);

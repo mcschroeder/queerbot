@@ -62,7 +62,6 @@ class Ingredient {
     float y = this.yValues[x];
     y = map(y, CANVAS_TOP, CANVAS_BOTTOM, 1, 0);
     y = constrain(y, 0, 1);
-    println(y);
     return y;
   }
   

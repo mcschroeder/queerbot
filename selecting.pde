@@ -41,7 +41,7 @@ void drawHistory() {
   fill(255);
   textSize(12);
   textAlign(LEFT,BASELINE);
-  text(history, 0, SCREEN_HEIGHT-(textAscent()+textDescent()));
+  text(history, 0, height-(textAscent()+textDescent()));
     
   for (Section section : model.sections) {
     if (section.covered && !DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS) {
@@ -60,6 +60,15 @@ void drawHistory() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+void gotoSelecting() {
+  state = QueerbotState.SELECTING;
+  cursor1.hidden = false;
+  cursor2.hidden = true;
+  activeCursor = cursor1;
+  updateSelectedSections();
+  analogValueChanged(analogValue);  
+}
 
 void moveCursor(float pos) {
   assert state == QueerbotState.SELECTING;
@@ -93,14 +102,14 @@ void confirm() {
   activeCursor = null;
   Selection selection1 = cursor1.getSelection();
   Selection selection2 = cursor2.hidden ? null : cursor2.getSelection();  
-  activeDrink = model.update(selection1, selection2);
+  Selection result = model.update(selection1, selection2);
   for (Section section : model.sections) {
     section.selected = false;
     section.highlighted = false;
   }
-  activeDrink.section.highlighted = true;
-  activeDrink.section.selected = true;
-  thread("mix");
+  result.section.highlighted = true;
+  result.section.selected = true;
+  gotoMixing(result);
 }
 
 void updateSelectedSections() {

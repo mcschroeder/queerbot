@@ -1,21 +1,12 @@
 import processing.serial.*;
 
-final boolean DEBUG_SHOW_FPS = true;
+final boolean DEBUG_SHOW_FPS = false;
 final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = true;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
 final boolean DEBUG_SIMULATE_HARDWARE = true;
 
-// constants
-// TODO: replace by builtin width/height variable
-final int SCREEN_WIDTH = 720;
-final int SCREEN_HEIGHT = 576;
+int CANVAS_LEFT, CANVAS_RIGHT, CANVAS_TOP, CANVAS_BOTTOM, CANVAS_WIDTH, CANVAS_HEIGHT;
 
-final int CANVAS_LEFT = 100;
-final int CANVAS_RIGHT = SCREEN_WIDTH-100;
-final int CANVAS_TOP = 50;
-final int CANVAS_BOTTOM = SCREEN_HEIGHT-200;
-final int CANVAS_WIDTH = CANVAS_RIGHT - CANVAS_LEFT;
-final int CANVAS_HEIGHT = CANVAS_BOTTOM - CANVAS_TOP;
 final color[] INGREDIENT_COLORS = {
     color(255,0,0),
     color(0,255,0),
@@ -29,7 +20,7 @@ enum QueerbotState {
   SELECTING,
   MIXING,
   //WAITING_FOR_REFILL,
-  //ERROR
+  ERROR
 }
 
 // variables
@@ -40,12 +31,20 @@ Cursor cursor2;
 Cursor activeCursor;
 Selection activeDrink;
 Serial port;
-
-void settings() {
-  size(SCREEN_WIDTH, SCREEN_HEIGHT);
-}
+String errorMsg;
 
 void setup() {
+  size(800,600);
+  //fullScreen();
+  noLoop();
+  
+  CANVAS_LEFT = 100;
+  CANVAS_RIGHT = width-100;
+  CANVAS_TOP = 50;
+  CANVAS_BOTTOM = height-200;
+  CANVAS_WIDTH = CANVAS_RIGHT - CANVAS_LEFT;
+  CANVAS_HEIGHT = CANVAS_BOTTOM - CANVAS_TOP;
+  
   model = new Model("ingredients.csv", "input.rules", "cover.rules");
   cursor1 = new Cursor(model);
   cursor2 = new Cursor(model);
@@ -53,13 +52,16 @@ void setup() {
   activeCursor = cursor1;
   
   if (!DEBUG_SIMULATE_HARDWARE) {
-    port = new Serial(this, "/dev/ttyUSB0", 9600);
-    port.bufferUntil(10);
+    try {
+      port = new Serial(this, "/dev/ttyUSB0", 9600);
+      port.bufferUntil(10);
+    } catch (Exception e) {
+      gotoError(e.getLocalizedMessage());      
+      return;
+    }
   }
   
   state = QueerbotState.SELECTING;    
-  ellipseMode(CENTER);
-  noLoop();  
 }
 
 void draw() {
@@ -67,7 +69,7 @@ void draw() {
     case SELECTING: drawSelectingInterface(); break;
     case MIXING: drawMixingInterface(); break;
     //case WAITING_FOR_REFILL: drawRefillInterface(); break;
-    //case ERROR: drawErrorInterface(); break;
+    case ERROR: drawErrorInterface(); break;
   }
     
   if (DEBUG_SHOW_FPS) {
@@ -81,7 +83,26 @@ void drawFramerate() {
   textSize(12);
   textAlign(LEFT,TOP);
   String fps = (int)frameRate+"";
-  text(fps, SCREEN_WIDTH-textWidth(fps)-10, 5);  
+  text(fps, width-textWidth(fps)-10, 5);  
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void gotoError(String msg) {
+  state = QueerbotState.ERROR;
+  errorMsg = msg;
+  redraw();
+}
+
+void drawErrorInterface() {
+  background(0,0,255);
+  textAlign(CENTER, BOTTOM);
+  int size = 50;
+  textSize(size);
+  while (textWidth(errorMsg) > width-50) {
+    textSize(size--);
+  }
+  text(errorMsg, width/2, height/2);  
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -122,7 +143,7 @@ void serialEvent(Serial port) {
     case 'A':
       if (line.length() < 3) return;
       int value = int(line.substring(2));
-      float x = clamp(norm(value, 0, 1024), 0, 1);
+      float x = constrain(norm(value, 0, 1024), 0, 1);
       analogValueChanged(x);
       break;
     case 'B':
@@ -149,18 +170,6 @@ void keyPressed() {
   switch (key) {
     case 's': selectButtonPressed(); break;
     case 'c': confirmButtonPressed(); break;
-    case 'm': if (DEBUG_SIMULATE_HARDWARE) { endMixing(); break; }
+    case 'm': if (DEBUG_SIMULATE_HARDWARE) { gotoSelecting(); break; }
   }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-// TODO: user builtin constrain() function
-
-int clamp(int n, int min, int max) {
-  return n < min ? min : n > max ? max : n;
-}
-
-float clamp(float n, float min, float max) {
-  return n < min ? min : n > max ? max : n;
 }
