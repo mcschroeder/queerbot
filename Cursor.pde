@@ -33,7 +33,10 @@ class Cursor {
   Selection getSelection() {
     for (Section section : model.sections) {
       if (x >= section.leftX && x <= section.rightX) {
-        float[] amounts = section.getAmounts(x);
+        float[] amounts = new float[model.ingredients.length];
+        for (int i = 0; i < model.ingredients.length; i++) {
+          amounts[i] = model.ingredients[i].getAmount(x);
+        }
         return new Selection(section, amounts);
       }
     }

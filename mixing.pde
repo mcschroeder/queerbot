@@ -6,6 +6,8 @@ void drawMixingInterface() {
 
   background(0,200,0);
   
+//  println(activeDrink.amounts);
+  
   float total = 0;
   for (float amount : activeDrink.amounts) {
     total += amount;

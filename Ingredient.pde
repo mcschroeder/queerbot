@@ -6,7 +6,7 @@ class Ingredient {
     
   // variables
   final PVector[] significantPoints;  // one point per section
-  PVector[] points;  // one point per pixel, from CANVAS_LEFT to CANVAS_RIGHT
+  final float[] points;  // one point per pixel, from CANVAS_LEFT to CANVAS_RIGHT
   color strokeColor;
   int strokeWeight = 3;
   boolean displayOnRightSide = false;
@@ -19,7 +19,7 @@ class Ingredient {
     for (int i = 0; i < significantPoints.length; i++) {
       significantPoints[i] = new PVector();
     }
-    this.points = new PVector[0];
+    this.points = new float[CANVAS_WIDTH];
     this.strokeColor = INGREDIENT_COLORS[this.index];    
   }
   
@@ -37,27 +37,60 @@ class Ingredient {
     calculatePoints();    
   }
   
-  // TODO: allocate PVectors on construction, modify spline() to update in-place?
+  // TODO: the incremental calls to updateSignificantPoints kinda fuck us here
   private void calculatePoints() {
     PVector[] controlPoints = new PVector[significantPoints.length+2];
     controlPoints[0] = significantPoints[0];
     for (int i = 1; i < controlPoints.length-1; i++) {
       controlPoints[i] = significantPoints[i-1];
-    }
+    }    
     controlPoints[controlPoints.length-1] = significantPoints[significantPoints.length-1];
-    this.points = spline(controlPoints, CANVAS_WIDTH/significantPoints.length);
+    PVector[] points = spline(controlPoints, CANVAS_WIDTH/significantPoints.length);
+    
+    HashMap<Integer,Float> pmap = new HashMap();
+    for (PVector point : points) {
+      pmap.put(new Integer((int)point.x), new Float(point.y));
+    }
+    for (int i = 0; i < CANVAS_WIDTH; i++) {
+      Float y = pmap.get(new Integer(CANVAS_LEFT+i));
+      this.points[i] = y == null ? (i > 0 ? this.points[i-1] : 0) : y;
+    }
+   
+    
+    /*
+    PVector[] points = spline(controlPoints, 2*(CANVAS_WIDTH/significantPoints.length));
+    for (PVector point : points) {
+      println(point);
+      this.points.put(new Integer((int)point.x), new Float(point.y));
+    }*/
+    println(this.points);
+  }
+  
+  // TODO: is it better to save; screen coords, relative amounts, absolute amounts (ml) ?
+  
+  float getAmount(int x) {
+    x = (int)map(x, CANVAS_LEFT, CANVAS_RIGHT, 0, this.points.length);    
+    x = constrain(x, 0, this.points.length-1);
+    float y = this.points[x];
+    y = map(y, CANVAS_TOP, CANVAS_BOTTOM, 1, 0);
+    y = constrain(y, 0, 1);
+    return y;
+    /*Float y = this.points.get(new Integer(x));
+    println("x="+x+" y="+y);
+    return y != null ? y : 0;*/
+    
+    /*int i = (int)map(x, CANVAS_LEFT, CANVAS_RIGHT, 0, points.length);
+    i = constrain(i, 0, points.length-1);
+    println("x="+x+" x-CANVAS_LEFT="+(x-CANVAS_LEFT)+" i="+i+" "+points[i]);
+    return points[i].y;*/     
   }
   
   void drawCurve() {
     noFill();
     strokeWeight(this.strokeWeight);
     stroke(this.strokeColor);
-    beginShape();
-    for (int i = 0; i < points.length; i++) {
-      PVector p = points[i];
-      point(p.x, p.y);
-    }
-    /*
+    /*beginShape();
+    
     for (int i = 0; i < significantPoints.length; i++) {
       PVector p = significantPoints[i];
       curveVertex(p.x, p.y);
@@ -65,8 +98,16 @@ class Ingredient {
         curveVertex(p.x, p.y);
       }
     }
-    */
+    
     endShape();
+    
+    
+    strokeWeight(1);
+    stroke(255,0,0);*/
+    for (int x = 0; x < CANVAS_WIDTH; x++) {
+      point(CANVAS_LEFT+x, this.points[x]);
+    }
+
   }
   
   void drawLabel() {

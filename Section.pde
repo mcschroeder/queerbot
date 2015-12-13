@@ -60,9 +60,4 @@ class Section {
     textAlign(CENTER,BASELINE);
     text(count, centerX, CANVAS_BOTTOM + 33 + 24 + 10);
   }
-
-  float[] getAmounts(int x) {
-    // TODO: get exact amounts at x
-    return significantAmounts;
-  }
 }

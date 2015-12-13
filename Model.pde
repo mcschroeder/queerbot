@@ -32,6 +32,7 @@ class Model {
           ingredients[j] = new Ingredient(j, row.getString("name"), sections.length);
           ingredients[j].displayOnRightSide = row.getString("side").equals("R");
         }
+        // TODO: set all sig points at once
         ingredients[j].updateSignificantPoints(sections[i]);
       }
     }
