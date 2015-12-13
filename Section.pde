@@ -9,7 +9,7 @@ class Section {
   final int rightX;
 
   // variables
-  final float[] significantAmounts;  // one amount per ingredient
+  final float[] significantAmounts;  // one percentage amount per ingredient
   int count = 0;  // how often was this section selected
   boolean covered = true;
   boolean selected = false;
