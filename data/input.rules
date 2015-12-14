@@ -1,15 +1,15 @@
-M,M -> M,M -> M
-Y,Y -> M   -> Y
-Q,Q -> X,Y -> Q
-X,X -> F   -> X
-F,F -> F,F -> F
-M,Y ->     -> hybrid
-Y,Q -> Y   -> hybrid
-Q,X -> X   -> hybrid
-X,F ->     -> hybrid
-M,F -> Q,Q -> Q
-M,Q -> Y   -> Y
-Y,X -> Q   -> Q
-Q,F -> X   -> X
-X,M -> Q   -> Q
-F,Y -> Q   -> Q
+Butch,Butch -> Butch,Butch -> Butch
+        X,X -> Butch       -> X
+Queer,Queer -> Y,X         -> Queer
+        Y,Y -> Femme       -> Y
+Femme,Femme -> Femme,Femme -> Femme
+    Butch,X ->             -> hybrid
+    X,Queer -> X           -> hybrid
+    Queer,Y -> Y           -> hybrid
+    Y,Femme ->             -> hybrid
+Butch,Femme -> Queer,Queer -> Queer
+Butch,Queer -> X           -> X
+        X,Y -> Queer       -> Queer
+Queer,Femme -> Y           -> Y
+    Y,Butch -> Queer       -> Queer
+    Femme,X -> Queer       -> Queer
