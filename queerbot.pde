@@ -1,19 +1,23 @@
 import processing.serial.*;
 
 final boolean DEBUG_SHOW_FPS = false;
-final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = true;
+final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = false;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
 final boolean DEBUG_SIMULATE_HARDWARE = true;
 
+int LEGEND_BOTTOM;
 int CANVAS_LEFT, CANVAS_RIGHT, CANVAS_TOP, CANVAS_BOTTOM, CANVAS_WIDTH, CANVAS_HEIGHT;
+int HISTORY_TOP;
+int MIN_BUBBLE_RADIUS;
+color BACKGROUND_COLOR = color(0);
 
 final color[] INGREDIENT_COLORS = {
-    color(255,0,0),
-    color(0,255,0),
-    color(0,0,255),
-    color(127,127,0),
-    color(0,127,127),
-    color(127,0,127)
+    color(6,174,213),
+    color(8,103,136),
+    color(240,200,8),
+    color(255,241,208),
+    color(221,28,26),
+    color(146,94,45)
 };
 
 enum QueerbotState {
@@ -34,16 +38,19 @@ Serial port;
 String errorMsg;
 
 void setup() {
-  size(800,600);
-  //fullScreen();
+  //size(800,600);
+  fullScreen();
   noLoop();
   
-  CANVAS_LEFT = 100;
-  CANVAS_RIGHT = width-100;
-  CANVAS_TOP = 50;
+  LEGEND_BOTTOM = 200;
+  CANVAS_LEFT = 0;
+  CANVAS_RIGHT = width;
+  CANVAS_TOP = LEGEND_BOTTOM;
   CANVAS_BOTTOM = height-200;
   CANVAS_WIDTH = CANVAS_RIGHT - CANVAS_LEFT;
   CANVAS_HEIGHT = CANVAS_BOTTOM - CANVAS_TOP;
+  HISTORY_TOP = height-150;
+  MIN_BUBBLE_RADIUS = 100;
   
   model = new Model("ingredients.csv", "input.rules", "cover.rules");
   cursor1 = new Cursor(model);

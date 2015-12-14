@@ -8,7 +8,7 @@ class Ingredient {
   final PVector[] controlPoints;  // spline control points, absolute pixel scale
   final float[] yValues;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
   color strokeColor;
-  int strokeWeight = 3;
+  int strokeWeight = 5;
   boolean displayOnRightSide = false;
   float fillLevel = 0;  // 0-1
   
@@ -74,14 +74,17 @@ class Ingredient {
       curveVertex(p.x, p.y);
     }
     endShape();
-        
+    
+    /*
     strokeWeight(1);
     stroke(255,0,0);
     for (int i = 0; i < CANVAS_WIDTH; i++) {
       point(CANVAS_LEFT+i, this.yValues[i]);
     }
+    */
   }
   
+  /*
   void drawLabel() {
     fill(this.strokeColor);
     textSize(24);
@@ -96,6 +99,7 @@ class Ingredient {
     }
     text(name, x, y);
   }
+  */
 
 }
 

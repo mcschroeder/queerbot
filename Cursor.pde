@@ -23,11 +23,23 @@ class Cursor {
   
   void draw() {
     if (hidden) return;
-    strokeWeight(1);
-    stroke(255,0,0);
-    line(x, CANVAS_TOP, x, CANVAS_BOTTOM);  
+    strokeWeight(50);
+    stroke(127);
+    line(x, CANVAS_TOP, x, CANVAS_BOTTOM);
+
+
+
     imageMode(CENTER);
-    image(hand, x, CANVAS_BOTTOM + (hand.height/2) + 50);    
+    //image(hand, x, CANVAS_BOTTOM + (hand.height/2) + 50);    
+  }
+  
+  void drawForeground() {
+    if (hidden) return;
+    noFill();
+    strokeWeight(12);
+    stroke(127);
+    rect(x-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
+
   }
   
   Selection getSelection() {

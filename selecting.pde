@@ -1,32 +1,43 @@
 void drawSelectingInterface() {
   assert (state == QueerbotState.SELECTING);  
-  background(0); 
+  background(BACKGROUND_COLOR);  
+  drawLegend();
   for (Section section : model.sections) {
     section.drawBackground();
   }
+  cursor1.draw();
+  cursor2.draw();
+  drawCurves();
+  cursor1.drawForeground();
+  cursor2.drawForeground();
+  for (Section section : model.sections) {
+    section.drawForeground();
+    section.drawLabel();
+  }
+}
+
+void drawLegend() {
+  //noStroke();
+  //fill(BACKGROUND_COLOR);
+  //rect(0,0,width,LEGEND_BOTTOM);
+  
+  for (int i = 0; i < model.ingredients.length; i++) {
+    Ingredient ingredient = model.ingredients[i];
+    
+    //text(ingredient.name, )
+  }
+  
+}
+
+void drawCurves() {
   imageMode(CORNER);
-  clip(CANVAS_LEFT, CANVAS_TOP, CANVAS_WIDTH, CANVAS_HEIGHT);
+  clip(CANVAS_LEFT, CANVAS_TOP+1, CANVAS_WIDTH, CANVAS_HEIGHT-1);
   for (Ingredient ingredient : model.ingredients) {
     ingredient.drawCurve();
   }
   noClip();
-  for (Ingredient ingredient : model.ingredients) {
-    ingredient.drawLabel();
-  }  
-  cursor1.draw();
-  cursor2.draw();
-  for (Section section : model.sections) {
-    section.drawForeground();
-    section.drawLabel();
-  }  
-  noFill();
-  stroke(255);
-  strokeWeight(3);
-  rect(CANVAS_LEFT, CANVAS_TOP, CANVAS_WIDTH, CANVAS_HEIGHT);  
-
-  drawHistory();
 }
-
+/*
 void drawHistory() {
   Section[] historySections = new Section[model.drinkHistory.size()];
   int i = 0;
@@ -38,7 +49,7 @@ void drawHistory() {
   for (Section section : historySections) {
     history += section.name + " ";
   }
-  fill(255);
+  fill(0);
   textSize(12);
   textAlign(LEFT,BASELINE);
   text(history, 0, height-(textAscent()+textDescent()));
@@ -58,6 +69,7 @@ void drawHistory() {
     text(percentage, section.centerX, CANVAS_BOTTOM + 100);
   }  
 }
+*/
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -125,7 +125,7 @@ class Model {
           currentRange.begin = section.leftX;
           currentRange.end = section.rightX;
         } else {
-          assert (currentRange.end == section.leftX);
+          //assert (currentRange.end == section.leftX);
           currentRange.end = section.rightX;
         }
       }

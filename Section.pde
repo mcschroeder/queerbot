@@ -26,6 +26,7 @@ class Section {
   }
       
   void drawBackground() {
+    /*
     if (highlighted) {
       noStroke();
       fill(100,100,200,80);
@@ -36,28 +37,41 @@ class Section {
       fill(100,100,200,127);
       rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);      
     }
+    */
   }
   
   void drawForeground() {
     if (covered) {
       noStroke();
-      fill(0);
+      fill(BACKGROUND_COLOR);
       rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);      
     }
   }
+  
   
   void drawLabel() {
     if (covered && !DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS) {
       return;
     }
-    fill(255);
-    textSize(24);
-    textAlign(CENTER,BASELINE);
-    text(name, centerX, CANVAS_BOTTOM + 33);
     
-    fill(255,0,0);
-    textSize(20);
-    textAlign(CENTER,BASELINE);
-    text(count, centerX, CANVAS_BOTTOM + 33 + 24 + 10);
+    int x = centerX;    
+    int y = HISTORY_TOP+(height-HISTORY_TOP)/2;    
+
+    int radius = MIN_BUBBLE_RADIUS + count*10;
+
+    noStroke();
+    if (highlighted || selected) {
+      fill(100,100,200);
+    } else {
+      fill(255);
+    }
+    ellipseMode(CENTER);
+    ellipse(x, y, radius, radius);
+    
+    fill(0);
+    textSize(24);
+    textAlign(CENTER,CENTER);
+    text(name, x, y);
   }
+  
 }
