@@ -23,9 +23,14 @@ class Cursor {
   
   void draw() {
     if (hidden) return;
+    /*
     strokeWeight(50);
-    stroke(127);
+    stroke(255);
     line(x, CANVAS_TOP, x, CANVAS_BOTTOM);
+    */
+    
+    fill(255);
+    rect(x-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
 
 
 
@@ -36,7 +41,7 @@ class Cursor {
   void drawForeground() {
     if (hidden) return;
     noFill();
-    strokeWeight(12);
+    strokeWeight(10);
     stroke(127);
     rect(x-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
 
