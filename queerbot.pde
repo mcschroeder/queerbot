@@ -39,6 +39,7 @@ String errorMsg;
 
 void setup() {
   //size(800,600);
+  noCursor();
   fullScreen();
   noLoop();
   
