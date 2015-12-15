@@ -3,15 +3,14 @@ import java.util.*;
 class Cursor {
   
   // constants
-  final PImage hand;
   final Model model;
   
   // variables
   int x = 0;
+  int drawingX = 0;  // to make sure background and foreground are in lock-step
   boolean hidden = false;
     
   Cursor(Model model) {
-    this.hand = loadImage("hand.jpg");
     this.model = model;
     update(0);
   }  
@@ -20,22 +19,12 @@ class Cursor {
     x = constrain(x, CANVAS_LEFT, CANVAS_RIGHT);
     this.x = clampToRanges(x, model.rangesForUncoveredSections);
   }
-  
-  void draw() {
-    if (hidden) return;
-    /*
-    strokeWeight(50);
-    stroke(255);
-    line(x, CANVAS_TOP, x, CANVAS_BOTTOM);
-    */
     
+  void drawBackground() {
+    drawingX = x;
+    if (hidden) return;    
     fill(255);
-    rect(x-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
-
-
-
-    imageMode(CENTER);
-    //image(hand, x, CANVAS_BOTTOM + (hand.height/2) + 50);    
+    rect(drawingX-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
   }
   
   void drawForeground() {
@@ -43,9 +32,8 @@ class Cursor {
     noFill();
     strokeWeight(10);
     stroke(127);
-    rect(x-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
-
-  }  
+    rect(drawingX-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
+  }
 }
 
 Selection getSelection(int x, Model model) {

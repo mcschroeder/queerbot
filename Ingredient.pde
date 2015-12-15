@@ -84,22 +84,8 @@ class Ingredient {
     */
   }
   
-  /*
-  void drawLabel() {
-    fill(this.strokeColor);
-    textSize(24);
-    textAlign(LEFT,BASELINE);
-    float x,y;
-    if (displayOnRightSide) {
-      x = CANVAS_RIGHT + 10;
-      y = controlPoints[controlPoints.length-1].y;
-    } else {
-      x = CANVAS_LEFT - textWidth(name) - 10;
-      y = controlPoints[0].y;
-    }
-    text(name, x, y);
-  }
-  */
+  
+  
 
 }
 

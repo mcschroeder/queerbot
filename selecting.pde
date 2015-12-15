@@ -1,12 +1,10 @@
-void drawSelectingInterface() {
-  assert (state == QueerbotState.SELECTING);  
+void drawSelectingInterface() {  
+  assert (state == QueerbotState.SELECTING);
+  
   background(BACKGROUND_COLOR);  
   drawLegend();
-  for (Section section : model.sections) {
-    section.drawBackground();
-  }
-  cursor1.draw();
-  cursor2.draw();
+  cursor1.drawBackground();
+  cursor2.drawBackground();
   drawCurves();
   cursor1.drawForeground();
   cursor2.drawForeground();
@@ -21,10 +19,40 @@ void drawLegend() {
   //fill(BACKGROUND_COLOR);
   //rect(0,0,width,LEGEND_BOTTOM);
   
-  for (int i = 0; i < model.ingredients.length; i++) {
-    Ingredient ingredient = model.ingredients[i];
+  int totalLabelWidth = 0;
+  
+  textSize(24);  
+  for (Ingredient ingredient : model.ingredients) {
+    totalLabelWidth += textWidth(ingredient.name);
+    totalLabelWidth += 20;  // rect
+  }
+  
+  int leftover = width-totalLabelWidth;
+  int margin = leftover/(model.ingredients.length+1);
+  
+  textAlign(LEFT,TOP);
+  
+  Selection activeSelection = getSelection(activeCursor.x, model);
+  
+  int x = margin;
+  int i = 0;
+  for (Ingredient ingredient : model.ingredients) {
+    float tWidth = textWidth(ingredient.name);
+    float tHeight = textAscent()+textDescent();
+        
     
-    //text(ingredient.name, )
+    float amount = activeSelection.amounts[i++];
+        
+    noStroke();
+    //stroke(ingredient.strokeColor);
+    //strokeWeight(2);
+    fill(ingredient.strokeColor, amount * 255);
+    rect(x, 10, tWidth + 20, tHeight + 5, 5, 5, 5, 5);
+    
+    noStroke();
+    fill(0);
+    text(ingredient.name, x+10, 10+2);
+    x += textWidth(ingredient.name) + 20 + margin;
   }
   
 }

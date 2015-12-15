@@ -25,21 +25,6 @@ class Section {
     this.rightX = leftX + width;    
   }
       
-  void drawBackground() {
-    /*
-    if (highlighted) {
-      noStroke();
-      fill(100,100,200,80);
-      rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);      
-    }    
-    if (selected) {
-      noStroke();
-      fill(100,100,200,127);
-      rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);      
-    }
-    */
-  }
-  
   void drawForeground() {
     if (covered) {
       noStroke();
@@ -57,7 +42,7 @@ class Section {
     int x = centerX;    
     int y = HISTORY_TOP+(height-HISTORY_TOP)/2;    
 
-    int radius = MIN_BUBBLE_RADIUS + count*10;
+    int radius = min(MAX_BUBBLE_RADIUS, MIN_BUBBLE_RADIUS + count);
 
     noStroke();
     if (highlighted || selected) {
@@ -65,13 +50,13 @@ class Section {
     } else {
       fill(255);
     }
-    ellipseMode(CENTER);
+    ellipseMode(RADIUS);
     ellipse(x, y, radius, radius);
     
     fill(0);
-    textSize(24);
+    textSize(radius/2);
     textAlign(CENTER,CENTER);
-    text(name, x, y);
+    text(name, x, y-2);
   }
   
 }
