@@ -19,12 +19,13 @@ class Cursor {
     x = constrain(x, CANVAS_LEFT, CANVAS_RIGHT);
     this.x = clampToRanges(x, model.rangesForUncoveredSections);
   }
-    
+  
   void drawBackground() {
     drawingX = x;
-    if (hidden) return;    
+    if (hidden) return;
+    noStroke();
     fill(255);
-    rect(drawingX-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
+    rect(drawingX-20, CANVAS_TOP+3, 40, CANVAS_BOTTOM-CANVAS_TOP-6, 20, 20, 20, 20);  
   }
   
   void drawForeground() {
@@ -32,7 +33,7 @@ class Cursor {
     noFill();
     strokeWeight(10);
     stroke(127);
-    rect(drawingX-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
+    rect(drawingX-20, CANVAS_TOP+3, 40, CANVAS_BOTTOM-CANVAS_TOP-6, 20, 20, 20, 20);  
   }
 }
 

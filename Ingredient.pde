@@ -71,7 +71,12 @@ class Ingredient {
     stroke(this.strokeColor);
     beginShape();
     for (PVector p : controlPoints) {
-      curveVertex(p.x, p.y);
+      float y = p.y;
+      // HACK: work around lines touching the bottom
+      if (y == CANVAS_BOTTOM) {
+        y = CANVAS_BOTTOM+this.strokeWeight/2;
+      }
+      curveVertex(p.x, y);
     }
     endShape();
     

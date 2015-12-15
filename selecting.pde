@@ -3,15 +3,18 @@ void drawSelectingInterface() {
   
   background(BACKGROUND_COLOR);  
   drawLegend();
+  for (Section section : model.sections) {
+    section.drawBackground();
+  }
   cursor1.drawBackground();
   cursor2.drawBackground();
   drawCurves();
-  cursor1.drawForeground();
-  cursor2.drawForeground();
   for (Section section : model.sections) {
     section.drawForeground();
     section.drawLabel();
   }
+  cursor1.drawForeground();
+  cursor2.drawForeground();
 }
 
 void drawLegend() {
@@ -31,8 +34,8 @@ void drawLegend() {
   int margin = leftover/(model.ingredients.length+1);
   
   textAlign(LEFT,TOP);
-  
-  Selection activeSelection = getSelection(activeCursor.x, model);
+
+  Selection activeSelection = activeCursor != null ? getSelection(activeCursor.x, model) : null;
   
   int x = margin;
   int i = 0;
@@ -41,7 +44,7 @@ void drawLegend() {
     float tHeight = textAscent()+textDescent();
         
     
-    float amount = activeSelection.amounts[i++];
+    float amount = activeSelection != null ? activeSelection.amounts[i++] : 0;
         
     noStroke();
     //stroke(ingredient.strokeColor);
@@ -59,11 +62,14 @@ void drawLegend() {
 
 void drawCurves() {
   imageMode(CORNER);
-  clip(CANVAS_LEFT, CANVAS_TOP+1, CANVAS_WIDTH, CANVAS_HEIGHT-1);
+  //clip(CANVAS_LEFT, CANVAS_TOP+1, CANVAS_WIDTH, CANVAS_HEIGHT-1);
   for (Ingredient ingredient : model.ingredients) {
     ingredient.drawCurve();
   }
-  noClip();
+  noStroke();
+  fill(0, 240);
+  rect(CANVAS_LEFT, CANVAS_BOTTOM, CANVAS_WIDTH, height-CANVAS_BOTTOM);
+  //noClip();
 }
 /*
 void drawHistory() {

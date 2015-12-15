@@ -83,11 +83,12 @@ class Model {
           result = hybridSelection(selection1, selection2, this);
         } else {
           result = new Selection(inputRule.out, inputRule.out.significantAmounts, inputRule.out.centerX);
-        }        
+        }
       }
     }
     
     rememberDrink(result);
+    result.section.addToHistory(result.x);
     
     Section[] history = new Section[drinkHistory.size()];
     int i = 0;
