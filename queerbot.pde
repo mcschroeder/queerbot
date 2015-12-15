@@ -1,5 +1,6 @@
 import processing.serial.*;
 
+final boolean DEBUG_LOG_RULES = true;
 final boolean DEBUG_SHOW_FPS = false;
 final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = false;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;

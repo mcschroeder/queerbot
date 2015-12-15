@@ -45,21 +45,21 @@ class Cursor {
     stroke(127);
     rect(x-20, CANVAS_TOP, 40, CANVAS_BOTTOM-CANVAS_TOP);  
 
-  }
-  
-  Selection getSelection() {
-    for (Section section : model.sections) {
-      if (x >= section.leftX && x <= section.rightX) {
-        float[] amounts = new float[model.ingredients.length];
-        for (int i = 0; i < model.ingredients.length; i++) {
-          amounts[i] = model.ingredients[i].getAmount(x);
-        }
-        return new Selection(section, amounts);
-      }
-    }
-    return null;
   }  
 }
+
+Selection getSelection(int x, Model model) {
+  for (Section section : model.sections) {
+    if (x >= section.leftX && x <= section.rightX) {
+      float[] amounts = new float[model.ingredients.length];
+      for (int i = 0; i < model.ingredients.length; i++) {
+        amounts[i] = model.ingredients[i].getAmount(x);
+      }
+      return new Selection(section, amounts, x);
+    }
+  }
+  return null;
+}  
 
 ///////////////////////////////////////////////////////////////////////////////
 

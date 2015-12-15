@@ -112,8 +112,8 @@ void select() {
 void confirm() {
   assert state == QueerbotState.SELECTING;
   activeCursor = null;
-  Selection selection1 = cursor1.getSelection();
-  Selection selection2 = cursor2.hidden ? null : cursor2.getSelection();  
+  Selection selection1 = getSelection(cursor1.x, model);
+  Selection selection2 = cursor2.hidden ? null : getSelection(cursor2.x, model);  
   Selection result = model.update(selection1, selection2);
   for (Section section : model.sections) {
     section.selected = false;
@@ -129,10 +129,10 @@ void updateSelectedSections() {
     section.selected = false;
   }
   if (cursor1 != activeCursor && !cursor1.hidden) {
-    cursor1.getSelection().section.selected = true;
+    getSelection(cursor1.x, model).section.selected = true;
   }
   if (cursor2 != activeCursor && !cursor2.hidden) {
-    cursor2.getSelection().section.selected = true;
+    getSelection(cursor2.x, model).section.selected = true;
   }
 }
 
@@ -141,6 +141,6 @@ void updateHighlightedSections() {
     section.highlighted = false;
   }
   if (activeCursor != null) {
-    activeCursor.getSelection().section.highlighted = true;
+    getSelection(activeCursor.x, model).section.highlighted = true;
   }
 }

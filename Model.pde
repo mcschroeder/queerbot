@@ -55,7 +55,9 @@ class Model {
   }
 
   Selection update(Selection selection1, Selection selection2) {
-    println("UPDATING MODEL WITH SELECTION: " + selection1 + "," + selection2);
+    if (DEBUG_LOG_RULES) {
+      println("UPDATING MODEL WITH SELECTION: " + selection1 + "," + selection2);
+    }
     assert (selection1 != null);
     Selection result;
     if (selection2 == null) {
@@ -65,20 +67,22 @@ class Model {
       Section[] selectedSections = {selection1.section, selection2.section};
       InputRule inputRule = firstMatchingInputRule(selectedSections, inputRules);      
       if (inputRule == null) {
-        println("NO INPUT RULE FOUND. TALLYING EACH AND RETURNING HYBRID.");
+        if (DEBUG_LOG_RULES) {
+          println("NO INPUT RULE FOUND. TALLYING EACH AND RETURNING HYBRID.");
+        }
         selection1.section.count += 1;
         selection2.section.count += 1;
-        // TODO: which section to choose for hybrid result?
-        result = selection1;  // TODO: hybrid
+        result = hybridSelection(selection1, selection2, this);
       } else {
-        println("USING INPUT RULE: " + inputRule);
+        if (DEBUG_LOG_RULES) {
+          println("USING INPUT RULE: " + inputRule);
+        }
         if (inputRule.tally1 != null) inputRule.tally1.count++;
         if (inputRule.tally2 != null) inputRule.tally2.count++;
         if (inputRule.out == null) {
-          // TODO: which section to choose for hybrid result?
-          result = selection1;  // TODO: hybrid
+          result = hybridSelection(selection1, selection2, this);
         } else {
-          result = new Selection(inputRule.out, inputRule.out.significantAmounts);
+          result = new Selection(inputRule.out, inputRule.out.significantAmounts, inputRule.out.centerX);
         }        
       }
     }
@@ -143,12 +147,26 @@ class Selection {
   final Section section;
   final float[] amounts;  // one amount per ingredient
   
-  public Selection(Section section, float[] amounts) {
+  // to move the cursor to the right location:
+  final int x;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
+  
+  public Selection(Section section, float[] amounts, int x) {
     this.section = section;
     this.amounts = amounts;
-  }  
-  
+    this.x = x;
+  }
+    
   String toString() {
     return section.name;
   }
+}
+
+Selection hybridSelection(Selection selection1, Selection selection2, Model model) {
+  int resultX;
+  if (selection1.x > selection2.x) {
+    resultX = selection1.x - selection2.x;
+  } else {
+    resultX = selection2.x - selection1.x;
+  }
+  return getSelection(resultX, model);
 }
