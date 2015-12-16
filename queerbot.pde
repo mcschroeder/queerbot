@@ -1,38 +1,5 @@
 import processing.serial.*;
 
-final boolean DEBUG_LOG_RULES = true;
-final boolean DEBUG_SHOW_FPS = false;
-final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = false;
-final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
-final boolean DEBUG_SIMULATE_HARDWARE = true;
-
-int SCREEN_WIDTH, SCREEN_HEIGHT;
-
-int LEGEND_HEIGHT, LEGEND_TOP, LEGEND_BOTTOM;
-int CANVAS_LEFT, CANVAS_RIGHT, CANVAS_TOP, CANVAS_BOTTOM, CANVAS_WIDTH, CANVAS_HEIGHT;
-int HISTORY_HEIGHT, HISTORY_TOP;
-int RAINBOW_TOP, RAINBOW_BOTTOM;
-
-
-final color[] INGREDIENT_COLORS = {
-    color(6,174,213),
-    color(8,103,136),
-    color(240,200,8),
-    color(255,241,208),
-    color(221,28,26),
-    color(146,94,45)
-};
-
-color[] RAINBOW_COLORS = {
-  color(255,0,0),
-  color(255,127,0),
-  color(255,255,0),
-  color(0,255,0),
-  color(0,0,255),
-  color(75,0,130),
-  color(139,0,255)
-};
-
 enum QueerbotState {
   SELECTING,
   MIXING,
@@ -48,36 +15,15 @@ Cursor cursor2;
 Cursor activeCursor;
 Selection activeDrink;
 Serial port;
-String errorMsg;
+
+void settings() {
+  size(SCREEN_WIDTH, SCREEN_HEIGHT);
+  //fullScreen();
+}
 
 void setup() {
-  loadConfig("config.txt");
-  
-  size(800,600);
   noCursor();
-  //fullScreen();
   noLoop();
-  
-  SCREEN_WIDTH = width;
-  SCREEN_HEIGHT = height;
-  
-  LEGEND_HEIGHT = 80;  
-  HISTORY_HEIGHT = SCREEN_HEIGHT/4;
-  CANVAS_HEIGHT = SCREEN_HEIGHT-LEGEND_HEIGHT-HISTORY_HEIGHT;
-  
-  LEGEND_TOP = 0;
-  LEGEND_BOTTOM = LEGEND_TOP+LEGEND_HEIGHT;
-  
-  
-  CANVAS_LEFT = 0;
-  CANVAS_RIGHT = SCREEN_WIDTH;
-  CANVAS_TOP = LEGEND_BOTTOM;
-  CANVAS_BOTTOM = CANVAS_TOP+CANVAS_HEIGHT;
-  CANVAS_WIDTH = CANVAS_RIGHT - CANVAS_LEFT;
-  
-  HISTORY_TOP = CANVAS_BOTTOM;
-  RAINBOW_TOP = HISTORY_TOP + 50;
-  RAINBOW_BOTTOM = height - 20;
     
   model = new Model("ingredients.csv", "input.rules", "cover.rules");
   cursor1 = new Cursor(model);
@@ -122,9 +68,11 @@ void drawFramerate() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+String _errorMsg;
+
 void gotoError(String msg) {
   state = QueerbotState.ERROR;
-  errorMsg = msg;
+  _errorMsg = msg;
   redraw();
 }
 
@@ -133,10 +81,10 @@ void drawErrorInterface() {
   textAlign(CENTER, BOTTOM);
   int size = 50;
   textSize(size);
-  while (textWidth(errorMsg) > width-50) {
+  while (textWidth(_errorMsg) > SCREEN_WIDTH-50) {
     textSize(size--);
   }
-  text(errorMsg, width/2, height/2);  
+  text(_errorMsg, SCREEN_WIDTH/2, SCREEN_WIDTH/2);  
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -195,8 +143,7 @@ void serialEvent(Serial port) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void mouseMoved() {
-  if (mouseX < CANVAS_LEFT || mouseX > CANVAS_RIGHT) return;
-  float x = map(mouseX, CANVAS_LEFT, CANVAS_RIGHT, 0, 1);
+  float x = map(mouseX, 0, SCREEN_WIDTH, 0, 1);
   analogValueChanged(x);
 }
 

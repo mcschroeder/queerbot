@@ -19,7 +19,7 @@ class Ingredient {
     for (int i = 0; i < controlPoints.length; i++) {
       controlPoints[i] = new PVector();
     }
-    this.yValues = new float[CANVAS_WIDTH];
+    this.yValues = new float[SCREEN_WIDTH];
     this.strokeColor = INGREDIENT_COLORS[this.index];    
   }
   
@@ -39,13 +39,13 @@ class Ingredient {
     controlPoints[0] = controlPoints[1];
     controlPoints[controlPoints.length-1] = controlPoints[controlPoints.length-2];    
     
-    PVector[] points = spline(controlPoints, CANVAS_WIDTH/sections.length);
+    PVector[] points = spline(controlPoints, SCREEN_WIDTH/sections.length);
     HashMap<Integer,Float> pointMap = new HashMap();
     for (PVector point : points) {
       pointMap.put(new Integer((int)point.x), new Float(point.y));
     }
-    for (int i = 0; i < CANVAS_WIDTH; i++) {
-      Float y = pointMap.get(new Integer(CANVAS_LEFT+i));
+    for (int i = 0; i < SCREEN_WIDTH; i++) {
+      Float y = pointMap.get(new Integer(i));
       if (y == null) {
         this.yValues[i] = i == 0 ? 0 : this.yValues[i-1];
       } else {
@@ -57,7 +57,7 @@ class Ingredient {
   // x = absolute pixel scale
   // return = percentage amount
   float getAmount(int x) {
-    x = (int)map(x, CANVAS_LEFT, CANVAS_RIGHT, 0, yValues.length);    
+    x = (int)map(x, 0, SCREEN_WIDTH, 0, yValues.length);    
     x = constrain(x, 0, yValues.length-1);
     float y = this.yValues[x];
     y = map(y, CANVAS_TOP, CANVAS_BOTTOM, 1, 0);
@@ -71,12 +71,7 @@ class Ingredient {
     stroke(this.strokeColor);
     beginShape();
     for (PVector p : controlPoints) {
-      float y = p.y;
-      // HACK: work around lines touching the bottom
-      if (y == CANVAS_BOTTOM) {
-        y = CANVAS_BOTTOM+this.strokeWeight/2;
-      }
-      curveVertex(p.x, y);
+      curveVertex(p.x, p.y);
     }
     endShape();
     
@@ -88,10 +83,6 @@ class Ingredient {
     }
     */
   }
-  
-  
-  
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////

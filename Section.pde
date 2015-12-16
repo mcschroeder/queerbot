@@ -5,7 +5,7 @@ class Section {
   // constants
   final int index;  
   final String name;    
-  final int width;
+  final int sectionWidth;
   final int leftX;
   final int centerX;
   final int rightX;
@@ -17,17 +17,14 @@ class Section {
   boolean selected = false;
   boolean highlighted = false;
   
-  final ConcurrentLinkedQueue<PVector> history;  // absolute pixels
-
   Section(int index, String name, int numSections, int numIngredients) {
     this.index = index;
     this.name = name;
     this.significantAmounts = new float[numIngredients];
-    this.width = CANVAS_WIDTH/numSections;
-    this.leftX = (int)map(index, 0, numSections-1, CANVAS_LEFT, CANVAS_RIGHT-width);
-    this.centerX = leftX + width/2;
-    this.rightX = leftX + width;   
-    this.history = new ConcurrentLinkedQueue<PVector>();
+    this.sectionWidth = SCREEN_WIDTH/numSections;
+    this.leftX = (int)map(index, 0, numSections-1, 0, SCREEN_WIDTH-sectionWidth);
+    this.centerX = leftX + sectionWidth/2;
+    this.rightX = leftX + sectionWidth;
   }
   
   void drawBackground() {
@@ -45,7 +42,7 @@ class Section {
     if (covered) {
       noStroke();
       fill(BACKGROUND_COLOR);
-      rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);
+      rect(leftX, CANVAS_TOP, sectionWidth, CANVAS_HEIGHT);
     }
   }
     
@@ -56,26 +53,8 @@ class Section {
     fill(255);
     textSize(24);
     textAlign(CENTER,TOP);
-    text(name, centerX, HISTORY_TOP+10);
-    
-    for (PVector p : history) {
-      noFill();
-      color c = gradient(p.x, 0, SCREEN_WIDTH, RAINBOW_COLORS);
-      stroke(c);
-      strokeWeight(8);
-      point(p.x, p.y);
-      //strokeWeight(2);
-      //line(p.x, RAINBOW_TOP, p.x, RAINBOW_BOTTOM);
-      
-    }    
+    text(name, centerX, SECTION_LABELS_TOP);    
   }
-  
-  void addToHistory(int x) {
-    assert x >= this.leftX && x <= this.rightX;
-    float y = random(RAINBOW_TOP, RAINBOW_BOTTOM);
-    history.add(new PVector(x, y));
-  }
-  
 }
 
 color gradient(float x, float minX, float maxX, color[] colors) {

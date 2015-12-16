@@ -1,8 +1,5 @@
 import java.util.*;
 
-// TODO: log whole history
-final int SELECTION_HISTORY_SIZE = 10;
-
 class Model {
   
   // constants  
@@ -11,15 +8,17 @@ class Model {
   final Ingredient[] ingredients;
   final List<InputRule> inputRules;
   final List<CoverRule> coverRules;
+  final History history;
   
   // variables
   Set<Range> rangesForUncoveredSections;
-  final Deque<Selection> drinkHistory = new LinkedList();
     
   public Model(String ingredientsFile, String inputRulesFile, String coverRulesFile) {    
     Table table = loadTable(ingredientsFile, "header");
     table.trim();
     
+    this.history = new History();
+        
     sections = new Section[table.getColumnCount()-2];
     sectionsByName = new HashMap();
     ingredients = new Ingredient[table.getRowCount()];    
@@ -51,7 +50,7 @@ class Model {
       sections[sections.length-1].covered = false;
     }
     
-    updateRangesForUncoveredSections();
+    updateRangesForUncoveredSections();    
   }
 
   Selection update(Selection selection1, Selection selection2) {
@@ -86,16 +85,10 @@ class Model {
         }
       }
     }
+
+    history.add(result);
     
-    rememberDrink(result);
-    result.section.addToHistory(result.x);
-    
-    Section[] history = new Section[drinkHistory.size()];
-    int i = 0;
-    for (Selection selection : drinkHistory) {
-      history[i++] = selection.section;
-    }
-    CoverRule coverRule = firstMatchingCoverRule(history, coverRules);
+    CoverRule coverRule = firstMatchingCoverRule(history.sectionsForSelections(), coverRules);
     if (coverRule != null) {
       println("FOUND MATCHING COVER RULE: " + coverRule);
       coverRule.conclusion.covered = !coverRule.uncover;
@@ -106,13 +99,6 @@ class Model {
     // TODO: update the traits based on ???
     
     return result;
-  }
-  
-  void rememberDrink(Selection drink) {
-    if (drinkHistory.size() >= SELECTION_HISTORY_SIZE) {
-      drinkHistory.removeLast();
-    }
-    drinkHistory.addFirst(drink);
   }
   
   void updateRangesForUncoveredSections() {

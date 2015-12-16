@@ -16,7 +16,6 @@ class Cursor {
   }  
   
   void update(int x) {
-    x = constrain(x, CANVAS_LEFT, CANVAS_RIGHT);
     this.x = clampToRanges(x, model.rangesForUncoveredSections);
   }
   
