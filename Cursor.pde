@@ -9,6 +9,9 @@ class Cursor {
   int x = 0;
   int drawingX = 0;  // to make sure background and foreground are in lock-step
   boolean hidden = false;
+  
+  float amountFilled = 0.3;
+  float currentlyFilling = 0.2;
     
   Cursor(Model model) {
     this.model = model;
@@ -23,16 +26,42 @@ class Cursor {
     drawingX = x;
     if (hidden) return;
     noStroke();
-    fill(255);
-    rect(drawingX-20, CANVAS_TOP+3, 40, CANVAS_BOTTOM-CANVAS_TOP-6, 20, 20, 20, 20);  
+    fill(CURSOR_BACKGROUND_COLOR);
+    rect(drawingX-(CURSOR_WIDTH/2), CANVAS_TOP, CURSOR_WIDTH, CANVAS_BOTTOM-CANVAS_TOP, 
+         (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2));
+         
+    float amountFilledTop = map(amountFilled, 0, 1, 0, CANVAS_HEIGHT-3);
+    float currentlyFillingTop = map(amountFilled+currentlyFilling, 0, 1, 0, CANVAS_HEIGHT-3);
+    color c = gradient(this.x, 0, SCREEN_WIDTH, RAINBOW_COLORS);
+    if (blink) {
+      fill(c);
+      rect(drawingX-(CURSOR_WIDTH/2), amountFilledTop, CURSOR_WIDTH, CANVAS_BOTTOM-amountFilledTop);
+    }    
+    if (millis() - lastTime >= 200) {
+      lastTime = millis();
+      blink = !blink;
+    }
+
+    
   }
   
+  boolean blink = false;
+  int lastTime;
+    
   void drawForeground() {
     if (hidden) return;
+
+
+
     noFill();
     strokeWeight(10);
-    stroke(127);
-    rect(drawingX-20, CANVAS_TOP+3, 40, CANVAS_BOTTOM-CANVAS_TOP-6, 20, 20, 20, 20);  
+    stroke(CURSOR_FOREGROUND_COLOR);
+    rect(drawingX-(CURSOR_WIDTH/2), CANVAS_TOP, CURSOR_WIDTH, CANVAS_BOTTOM-CANVAS_TOP, 
+         (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2));  
+  }
+  
+  void clipArea() {
+    clip(drawingX-(CURSOR_WIDTH/2), CANVAS_TOP, CURSOR_WIDTH, CANVAS_BOTTOM-CANVAS_TOP);
   }
 }
 
@@ -47,7 +76,7 @@ Selection getSelection(int x, Model model) {
     }
   }
   return null;
-}  
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

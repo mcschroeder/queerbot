@@ -150,7 +150,7 @@ void mouseMoved() {
 void keyPressed() {
   switch (key) {
     case 's': selectButtonPressed(); break;
-    case 'c': confirmButtonPressed(); break;
-    case 'm': if (DEBUG_SIMULATE_HARDWARE) { gotoSelecting(); break; }    
+    case 'c': if (DEBUG_SIMULATE_HARDWARE && state == QueerbotState.MIXING) gotoSelecting(); else confirmButtonPressed(); break;
+    //case 'm': gotoMaintenanceMode(); break;
   }
 }

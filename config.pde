@@ -16,6 +16,8 @@ final color[] INGREDIENT_COLORS = {
     color(221,28,26),
     color(146,94,45)
 };
+final color CURSOR_BACKGROUND_COLOR = color(255);
+final color CURSOR_FOREGROUND_COLOR = 255; //color(127);
 final color[] RAINBOW_COLORS = {  
   color(255,0,0),
   color(255,127,0),
@@ -33,6 +35,8 @@ final int HISTORY_HEIGHT = 150;
 final int SECTION_LABELS_TOP_MARGIN = 20;
 final int RAINBOW_TOP_MARGIN = 50;
 final int RAINBOW_BOTTOM_MARGIN = 0;
+
+final int CURSOR_WIDTH = 40;
 
 final int CANVAS_HEIGHT = SCREEN_HEIGHT-LEGEND_HEIGHT-HISTORY_HEIGHT;
 final int LEGEND_TOP = 0;

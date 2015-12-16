@@ -16,6 +16,7 @@ class Section {
   boolean covered = true;
   boolean selected = false;
   boolean highlighted = false;
+  boolean dimmed = false;
   
   Section(int index, String name, int numSections, int numIngredients) {
     this.index = index;
@@ -42,22 +43,27 @@ class Section {
     if (covered) {
       noStroke();
       fill(BACKGROUND_COLOR);
-      rect(leftX, CANVAS_TOP, sectionWidth, CANVAS_HEIGHT);
+      rect(leftX, CANVAS_TOP, sectionWidth, SCREEN_HEIGHT-CANVAS_TOP);
     }
-  }
+    if (dimmed && !highlighted) {
+      noStroke();
+      fill(BACKGROUND_COLOR, 200);
+      rect(leftX, CANVAS_TOP, sectionWidth, SCREEN_HEIGHT-CANVAS_TOP);
+    }
+}
     
   void drawLabel() {       
     if (covered && !DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS) {
       return;
-    }        
-    fill(255);
+    }
+    fill(255, dimmed ? 100 : 255);
     textSize(24);
     textAlign(CENTER,TOP);
     text(name, centerX, SECTION_LABELS_TOP);    
   }
 }
 
-color gradient(float x, float minX, float maxX, color[] colors) {
+color gradient(float x, float minX, float maxX, color[] colors) {  
   float size = maxX - minX;
   float bucketSize = size/(colors.length-1);
   int i = (int)(x/bucketSize);

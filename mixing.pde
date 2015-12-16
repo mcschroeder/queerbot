@@ -2,10 +2,27 @@ void drawMixingInterface() {
   assert state == QueerbotState.MIXING;
   assert activeDrink != null;
 
-  background(0,200,0);
+  background(BACKGROUND_COLOR);
+  drawLegend(getSelection(activeDrink.x, model));
+  for (Section section : model.sections) {
+    section.drawBackground();
+  }
+  drawCurves();
+  model.history.drawMarks();
+  for (Section section : model.sections) {
+    section.drawForeground();
+    section.drawLabel();
+  }
+  cursor1.drawBackground();  
+  cursor1.clipArea();
+  for (Ingredient ingredient : model.ingredients) {
+    ingredient.drawCurve();
+  }
+  noClip();
+  cursor1.drawForeground();
   
-//  println(activeDrink.amounts);
-  
+
+  /*
   float total = 0;
   for (float amount : activeDrink.amounts) {
     total += amount;
@@ -23,7 +40,9 @@ void drawMixingInterface() {
   textSize(26);
   fill(0);
   textAlign(CENTER, CENTER);
-  text(msg, width/2, height/2);  
+  text(msg, width/2, height/2);
+  
+  */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,7 +52,16 @@ void gotoMixing(Selection drink) {
   assert drink != null;
   activeDrink = drink;
   state = QueerbotState.MIXING;
-  redraw();
+  cursor1.update(drink.x);
+  for (Section section : model.sections) {
+    section.selected = false;
+    section.highlighted = false;
+    section.dimmed = true;
+  }
+  activeDrink.section.dimmed = false;
+  activeDrink.section.selected = true;
+  loop();
+  //redraw();
   
   if (DEBUG_SIMULATE_HARDWARE) return;
   

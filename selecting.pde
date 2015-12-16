@@ -1,29 +1,25 @@
 void drawSelectingInterface() {  
   assert (state == QueerbotState.SELECTING);  
   background(BACKGROUND_COLOR);
-  drawLegend();
+  if (activeCursor != null) {
+    drawLegend(getSelection(activeCursor.x, model));
+  }
   for (Section section : model.sections) {
     section.drawBackground();
   }
   cursor1.drawBackground();
   cursor2.drawBackground();
-  imageMode(CORNER);
-  clip(0, CANVAS_TOP, SCREEN_WIDTH, CANVAS_HEIGHT);
-  for (Ingredient ingredient : model.ingredients) {
-    ingredient.drawCurve();
-  }
-  noClip();
+  drawCurves();
+  model.history.drawMarks();
   for (Section section : model.sections) {
     section.drawForeground();
     section.drawLabel();
-  }
+  }  
   cursor1.drawForeground();
   cursor2.drawForeground();
-  model.history.drawMarks();
 }
 
-void drawLegend() {
-  Selection activeSelection = activeCursor != null ? getSelection(activeCursor.x, model) : null;  
+void drawLegend(Selection selection) {
   int margin = getIngredientTextMargin();
   textAlign(LEFT,TOP);
   textSize(INGREDIENT_TEXT_SIZE);
@@ -33,7 +29,7 @@ void drawLegend() {
   for (int i = 0; i < model.ingredients.length; i++) {
     Ingredient ingredient = model.ingredients[i];    
     float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;    
-    float alpha = 255 * (activeSelection != null ? activeSelection.amounts[i] : 0);        
+    float alpha = 255 * selection.amounts[i];        
     noStroke();
     fill(ingredient.strokeColor, alpha);
     rect(x, y, w, h, 5, 5, 5, 5);    
@@ -57,9 +53,19 @@ int getIngredientTextMargin() {
   return _ingredientTextMargin;
 }
 
+void drawCurves() {
+  imageMode(CORNER);
+  clip(0, CANVAS_TOP+3, SCREEN_WIDTH, CANVAS_HEIGHT-6);
+  for (Ingredient ingredient : model.ingredients) {
+    ingredient.drawCurve();
+  }
+  noClip();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void gotoSelecting() {
+  noLoop();
   state = QueerbotState.SELECTING;
   cursor1.hidden = false;
   cursor2.hidden = true;
@@ -108,12 +114,13 @@ void confirm() {
   result.section.highlighted = true;
   result.section.selected = true;
   gotoSelecting();
-  //gotoMixing(result);
+  gotoMixing(result);
 }
 
 void updateSelectedSections() {
   for (Section section : model.sections) {
     section.selected = false;
+    section.dimmed = false;
   }
   if (cursor1 != activeCursor && !cursor1.hidden) {
     getSelection(cursor1.x, model).section.selected = true;
