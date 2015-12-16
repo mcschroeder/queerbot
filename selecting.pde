@@ -155,7 +155,8 @@ void confirm() {
   }
   result.section.highlighted = true;
   result.section.selected = true;
-  gotoMixing(result);
+  gotoSelecting();
+  //gotoMixing(result);
 }
 
 void updateSelectedSections() {

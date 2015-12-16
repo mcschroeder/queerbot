@@ -24,6 +24,16 @@ final color[] INGREDIENT_COLORS = {
     color(146,94,45)
 };
 
+color[] RAINBOW_COLORS = {
+  color(255,0,0),
+  color(255,127,0),
+  color(255,255,0),
+  color(0,255,0),
+  color(0,0,255),
+  color(75,0,130),
+  color(139,0,255)
+};
+
 enum QueerbotState {
   SELECTING,
   MIXING,
@@ -42,9 +52,9 @@ Serial port;
 String errorMsg;
 
 void setup() {
-  //size(800,600);
+  size(800,600);
   noCursor();
-  fullScreen();
+  //fullScreen();
   noLoop();
   
   SCREEN_WIDTH = width;
@@ -196,6 +206,6 @@ void keyPressed() {
   switch (key) {
     case 's': selectButtonPressed(); break;
     case 'c': confirmButtonPressed(); break;
-    case 'm': if (DEBUG_SIMULATE_HARDWARE) { gotoSelecting(); break; }
+    case 'm': if (DEBUG_SIMULATE_HARDWARE) { gotoSelecting(); break; }    
   }
 }

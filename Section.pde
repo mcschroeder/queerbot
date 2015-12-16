@@ -45,7 +45,7 @@ class Section {
     if (covered) {
       noStroke();
       fill(BACKGROUND_COLOR);
-      rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);      
+      rect(leftX, CANVAS_TOP, width, CANVAS_HEIGHT);
     }
   }
     
@@ -60,12 +60,13 @@ class Section {
     
     for (PVector p : history) {
       noFill();
-      color c = rainbowColor(p.x);
+      color c = gradient(p.x, 0, SCREEN_WIDTH, RAINBOW_COLORS);
       stroke(c);
       strokeWeight(8);
-      //strokeWeight(1);
-      //line(p.x, p.y, p.x, p.y);
       point(p.x, p.y);
+      //strokeWeight(2);
+      //line(p.x, RAINBOW_TOP, p.x, RAINBOW_BOTTOM);
+      
     }    
   }
   
@@ -77,17 +78,12 @@ class Section {
   
 }
 
-color[] rainbow = {
-  color(255,0,0),
-  color(255,119,0),
-  color(255,221,0),
-  color(0,255,0),
-  color(0,0,255),
-  color(138,43,226),
-  color(199,125,243)
-};
-
-color rainbowColor(float x) {
-  // TODO
-  return rainbow[0];
+color gradient(float x, float minX, float maxX, color[] colors) {
+  float size = maxX - minX;
+  float bucketSize = size/(colors.length-1);
+  int i = (int)(x/bucketSize);
+  color c1 = colors[i];
+  color c2 = colors[min(i+1, colors.length-1)];
+  float amt = (float) (x % bucketSize) / bucketSize;
+  return lerpColor(c1, c2, amt);
 }
