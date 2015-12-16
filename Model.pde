@@ -56,7 +56,7 @@ class Model {
 
   Selection update(Selection selection1, Selection selection2) {
     if (DEBUG_LOG_RULES) {
-      println("UPDATING MODEL WITH SELECTION: " + selection1 + "," + selection2);
+      println("\nUPDATING MODEL WITH SELECTION: " + selection1 + "," + selection2);
     }
     assert (selection1 != null);
     Selection result;

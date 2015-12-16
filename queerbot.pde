@@ -12,8 +12,7 @@ int LEGEND_HEIGHT, LEGEND_TOP, LEGEND_BOTTOM;
 int CANVAS_LEFT, CANVAS_RIGHT, CANVAS_TOP, CANVAS_BOTTOM, CANVAS_WIDTH, CANVAS_HEIGHT;
 int HISTORY_HEIGHT, HISTORY_TOP;
 int RAINBOW_TOP, RAINBOW_BOTTOM;
-int MIN_BUBBLE_RADIUS, MAX_BUBBLE_RADIUS;
-color BACKGROUND_COLOR = color(0);
+
 
 final color[] INGREDIENT_COLORS = {
     color(6,174,213),
@@ -52,6 +51,8 @@ Serial port;
 String errorMsg;
 
 void setup() {
+  loadConfig("config.txt");
+  
   size(800,600);
   noCursor();
   //fullScreen();
@@ -77,10 +78,7 @@ void setup() {
   HISTORY_TOP = CANVAS_BOTTOM;
   RAINBOW_TOP = HISTORY_TOP + 50;
   RAINBOW_BOTTOM = height - 20;
-  
-  MIN_BUBBLE_RADIUS = 20;
-  MAX_BUBBLE_RADIUS = HISTORY_HEIGHT/2-10;
-  
+    
   model = new Model("ingredients.csv", "input.rules", "cover.rules");
   cursor1 = new Cursor(model);
   cursor2 = new Cursor(model);
