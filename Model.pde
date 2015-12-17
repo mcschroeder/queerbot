@@ -155,9 +155,10 @@ class Selection {
 Selection hybridSelection(Selection selection1, Selection selection2, Model model) {
   int resultX;
   if (selection1.x > selection2.x) {
-    resultX = selection1.x - selection2.x;
+    resultX = selection2.x + (selection1.x - selection2.x)/2;
   } else {
-    resultX = selection2.x - selection1.x;
+    resultX = selection1.x + (selection2.x - selection1.x)/2;
   }
+  println("s1="+selection1.x+" s2="+selection2.x+" r="+resultX);
   return getSelection(resultX, model);
 }
