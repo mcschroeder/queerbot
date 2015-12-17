@@ -1,6 +1,5 @@
 final Queue<PVector> ingredientsToMix = new LinkedList<PVector>();
 boolean mixingInProgress = false;
-PImage _blurredBackground = null;
 
 void drawMixingInterface() {
   assert state == QueerbotState.MIXING;
@@ -8,23 +7,7 @@ void drawMixingInterface() {
   
   if (activeDrink == null) return;
   
-  //background(BACKGROUND_COLOR);
-  
-  
-  if (_blurredBackground == null) {    
-    background(BACKGROUND_COLOR);
-    drawCurves();
-    model.history.drawMarks();
-    for (Section section : model.sections) {
-      section.drawForeground();
-      section.drawLabel();
-    }  
-    filter(BLUR,6);  
-    _blurredBackground = get();
-  }
-  image(_blurredBackground, 0, 0);
-  
-  
+  background(BACKGROUND_COLOR);  
   drawLegend(getSelection(activeDrink.x, model));
   model.history.drawMark(activeDrink.mark);
   activeDrink.section.drawLabel();
