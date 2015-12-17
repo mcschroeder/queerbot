@@ -36,7 +36,7 @@ class Section {
   }
     
   void drawLabel() {       
-    if (covered && !DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS) {
+    if (covered) {
       return;
     }
     
