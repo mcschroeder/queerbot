@@ -166,7 +166,14 @@ void mouseMoved() {
 void keyPressed() {
   switch (key) {
     case 's': selectButtonPressed(); break;
-    case 'c': if (DEBUG_SIMULATE_HARDWARE && state == QueerbotState.MIXING) gotoSelecting(); else confirmButtonPressed(); break;
+    case 'c':
+      if (DEBUG_SIMULATE_MIXING && 
+          state == QueerbotState.MIXING && mixingInProgress) {
+        mixNextIngredient();
+      } else {
+        confirmButtonPressed();
+      }
+      break;
     //case 'm': gotoMaintenanceMode(); break;
   }
 }

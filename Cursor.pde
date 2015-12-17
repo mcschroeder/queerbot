@@ -51,12 +51,10 @@ class Cursor {
         _prevMillis = currentMillis;
         _blink = !_blink;
       }
-      if (!_blink) {
-        float y = map(fillToLevel, 0, 1, CANVAS_BOTTOM-3, CANVAS_TOP+3);
-        noStroke();
-        fill(c);
-        rect(x, y, CURSOR_WIDTH, CANVAS_BOTTOM-3-y);
-      }
+      float y = map(fillToLevel, 0, 1, CANVAS_BOTTOM-3, CANVAS_TOP+3);
+      noStroke();
+      fill(c, _blink ? 120 : 255);
+      rect(x, y, CURSOR_WIDTH, CANVAS_BOTTOM-3-y);
     }
 
     noFill();
@@ -67,7 +65,7 @@ class Cursor {
   }
   
   void clipArea() {
-    clip(drawingX-(CURSOR_WIDTH/2), CANVAS_TOP, CURSOR_WIDTH, CANVAS_BOTTOM-CANVAS_TOP);
+    clip(drawingX-(CURSOR_WIDTH/2), CANVAS_TOP+3, CURSOR_WIDTH, CANVAS_HEIGHT-6);
   }
 }
 

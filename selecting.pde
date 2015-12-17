@@ -14,6 +14,7 @@ void drawSelectingInterface() {
   }  
   cursor1.drawForeground();
   cursor2.drawForeground();
+  noLoop();
 }
 
 void drawLegend(Selection selection) {
@@ -71,7 +72,7 @@ void gotoSelecting() {
   activeCursor = cursor1;
   updateSelectedSections();
   analogValueChanged(analogValue);
-  redraw();
+  loop();
 }
 
 void moveCursor(float pos) {

@@ -2,7 +2,8 @@ final boolean DEBUG_LOG_RULES = true;
 final boolean DEBUG_SHOW_FPS = false;
 final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = false;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
-final boolean DEBUG_SIMULATE_HARDWARE = true;
+final boolean DEBUG_SIMULATE_MIXING = false;
+final boolean DEBUG_SIMULATE_HARDWARE = false;
 
 final int CUP_SIZE = 150;  // milliliters
 
@@ -35,7 +36,7 @@ final int SCREEN_HEIGHT = 600;
 final int LEGEND_HEIGHT = 80;
 final int HISTORY_HEIGHT = 150;
 final int SECTION_LABELS_TOP_MARGIN = 20;
-final int RAINBOW_TOP_MARGIN = 50;
+final int RAINBOW_TOP_MARGIN = 60;
 final int RAINBOW_BOTTOM_MARGIN = 0;
 
 final int CURSOR_WIDTH = 40;

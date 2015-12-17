@@ -14,7 +14,9 @@ class History {
     selections.addFirst(selection);
     
     float y = random(RAINBOW_TOP, RAINBOW_BOTTOM);
-    marks.add(new PVector(selection.x, y));
+    PVector p = new PVector(selection.x, y);
+    marks.add(p);
+    selection.mark = p;
   }
   
   Section[] sectionsForSelections() {
@@ -28,14 +30,18 @@ class History {
 
   void drawMarks() {
     for (PVector p : marks) {
-      noFill();
-      color c = gradient(p.x, 0, SCREEN_WIDTH, RAINBOW_COLORS);
-      stroke(c);
-      strokeWeight(8);
-      point(p.x, p.y);
-      //strokeWeight(2);
-      //line(p.x, RAINBOW_TOP, p.x, RAINBOW_BOTTOM);      
+      drawMark(p);
     }        
+  }
+  
+  void drawMark(PVector p) {
+    noFill();
+    color c = gradient(p.x, 0, SCREEN_WIDTH, RAINBOW_COLORS);
+    stroke(c);
+    strokeWeight(8);
+    point(p.x, p.y);
+    //strokeWeight(2);
+    //line(p.x, RAINBOW_TOP, p.x, RAINBOW_BOTTOM);    
   }
 
 }

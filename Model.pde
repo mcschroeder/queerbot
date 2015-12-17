@@ -50,7 +50,7 @@ class Model {
       sections[sections.length-1].covered = false;
     }
     
-    updateRangesForUncoveredSections();    
+    updateRangesForUncoveredSections(CURSOR_WIDTH/2);    
   }
 
   Selection update(Selection selection1, Selection selection2) {
@@ -94,26 +94,27 @@ class Model {
       coverRule.conclusion.covered = !coverRule.uncover;
     }    
     
-    updateRangesForUncoveredSections();
+    updateRangesForUncoveredSections(CURSOR_WIDTH/2);
     
     // TODO: update the traits based on ???
     
     return result;
   }
   
-  void updateRangesForUncoveredSections() {
+  void updateRangesForUncoveredSections(int padding) {
     Set<Range> ranges = new HashSet();
     Range currentRange = null;
     for (Section section : sections) {
       if (section.covered) {
         if (currentRange != null) {
+          currentRange.end -= padding;
           ranges.add(currentRange);
           currentRange = null;
         }
       } else {
         if (currentRange == null) {
           currentRange = new Range();
-          currentRange.begin = section.leftX;
+          currentRange.begin = section.leftX + padding;
           currentRange.end = section.rightX;
         } else {
           //assert (currentRange.end == section.leftX);
@@ -122,6 +123,7 @@ class Model {
       }
     }
     if (currentRange != null) {
+      currentRange.end -= padding;
       ranges.add(currentRange);
     }
     this.rangesForUncoveredSections = ranges;
@@ -136,6 +138,8 @@ class Selection {
   
   // to move the cursor to the right location:
   final int x;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
+  
+  PVector mark;  // mark on the rainbow of history
   
   public Selection(Section section, float[] amounts, int x) {
     this.section = section;

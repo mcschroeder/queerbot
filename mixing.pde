@@ -1,19 +1,26 @@
+final Queue<PVector> ingredientsToMix = new LinkedList<PVector>();
+boolean mixingInProgress = false;
+PImage _blurredBackground = null;
+
 void drawMixingInterface() {
   assert state == QueerbotState.MIXING;
   assert activeDrink != null;
-
-  background(BACKGROUND_COLOR);
-  drawCurves();
-  model.history.drawMarks();
-  for (Section section : model.sections) {
-    section.drawForeground();
-    section.drawLabel();
-  }
   
-  // TODO: make performant
-  filter(BLUR,6);
+  if (_blurredBackground == null) {    
+    background(BACKGROUND_COLOR);
+    drawCurves();
+    model.history.drawMarks();
+    for (Section section : model.sections) {
+      section.drawForeground();
+      section.drawLabel();
+    }  
+    filter(BLUR,6);  
+    _blurredBackground = get();
+  }
+  image(_blurredBackground, 0, 0);
   
   drawLegend(getSelection(activeDrink.x, model));
+  model.history.drawMark(activeDrink.mark);
   activeDrink.section.drawLabel();
   cursor1.drawBackground();
   cursor1.clipArea();
@@ -22,38 +29,9 @@ void drawMixingInterface() {
   }
   noClip();
   cursor1.drawForeground();
-  
-  if (DEBUG_SIMULATE_HARDWARE && _simulateMixingDone) {
-    mixNextIngredient();
-  }
-
-  /*
-  float total = 0;
-  for (float amount : activeDrink.amounts) {
-    total += amount;
-  }
-  float[] norms = new float[activeDrink.amounts.length];
-  for (int i = 0; i < activeDrink.amounts.length; i++) {
-    norms[i] = map(activeDrink.amounts[i], 0, total, 0, 100);
-  }
-  int[] percentages = round(norms);  
-  String msg = "+++ MIXING " + activeDrink.section.name + " DRINK +++";
-  for (int i = 0; i < activeDrink.amounts.length; i++) {
-    Ingredient ingredient = model.ingredients[i];
-    msg += "\n" + percentages[i] + "% " + ingredient.name;
-  }
-  textSize(26);
-  fill(0);
-  textAlign(CENTER, CENTER);
-  text(msg, width/2, height/2);
-  
-  */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-final Queue<PVector> ingredientsToMix = new LinkedList<PVector>();
-boolean _simulateMixingDone = false;
 
 void gotoMixing(Selection drink) {
   assert state == QueerbotState.SELECTING;
@@ -91,23 +69,19 @@ void mixNextIngredient() {
     int index = (int)p.x;
     int amount = (int)p.y;    
     cursor1.fillToLevel = cursor1.fillLevel + norm(amount, 0, CUP_SIZE);    
-    if (DEBUG_SIMULATE_HARDWARE) {
-      _simulateMixingDone = false;
-      thread("simulateMixing");
+    if (DEBUG_SIMULATE_MIXING) {
+      mixingInProgress = true;
     } else {
       // TODO
     }
   }
 }
 
-void simulateMixing() {
-  delay(1000);
-  _simulateMixingDone = true;
-}
-
 void finishMixing() {
   noLoop();
   activeDrink = null;
+  _blurredBackground = null;
+  mixingInProgress = false;
   gotoSelecting();
 }
 
