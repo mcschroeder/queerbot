@@ -69,7 +69,6 @@ void mixNextIngredient() {
 void finishMixing() {
   noLoop();
   activeDrink = null;
-  _blurredBackground = null;
   mixingInProgress = false;
   gotoSelecting();
 }

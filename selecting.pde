@@ -72,7 +72,8 @@ void gotoSelecting() {
   activeCursor = cursor1;
   updateSelectedSections();
   analogValueChanged(analogValue);
-  loop();
+  loop();  
+  //checkFillLevels();
 }
 
 void moveCursor(float pos) {
