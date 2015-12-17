@@ -6,6 +6,8 @@ void drawMixingInterface() {
   assert state == QueerbotState.MIXING;
   assert activeDrink != null;
   
+  if (activeDrink == null) return;
+  
   if (_blurredBackground == null) {    
     background(BACKGROUND_COLOR);
     drawCurves();

@@ -44,6 +44,11 @@ void setup() {
   state = QueerbotState.SELECTING;    
 }
 
+void stop() {
+  model.history.logWriter.flush();
+  model.history.logWriter.close();
+}
+
 void draw() {
   switch (state) {
     case SELECTING: drawSelectingInterface(); break;

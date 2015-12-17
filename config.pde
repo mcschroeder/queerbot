@@ -15,14 +15,6 @@ final int SELECTION_HISTORY_SIZE = 10;
 
 final color BACKGROUND_COLOR = color(0);
 final color INGREDIENT_TEXT_COLOR = color(0);
-final color[] INGREDIENT_COLORS = {
-    color(6,174,213),
-    color(8,103,136),
-    color(240,200,8),
-    color(255,241,208),
-    color(221,28,26),
-    color(146,94,45)
-};
 final color CURSOR_BACKGROUND_COLOR = color(255);
 final color CURSOR_FOREGROUND_COLOR = 255; //color(127);
 final color[] RAINBOW_COLORS = {  

@@ -1,10 +1,24 @@
+import java.text.*;
+
 class History {
   final Deque<Selection> selections;  // size = SELECTION_HISTORY_SIZE
   final ConcurrentLinkedQueue<PVector> marks;  // absolute pixels
+  final PrintWriter logWriter;
   
-  History() {
+  History(Ingredient[] ingredients) {
     this.selections = new LinkedList();
-    this.marks = new ConcurrentLinkedQueue<PVector>();    
+    this.marks = new ConcurrentLinkedQueue<PVector>();
+    
+    Format formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ");    
+    String logName = formatter.format(new Date()) + ".csv";    
+    this.logWriter = createWriter("log/"+logName);
+    String headerLine = "time,section";
+    for (Ingredient ingredient : ingredients) {
+      headerLine += ","+ingredient.name;
+    }
+    headerLine += ",rainbowX,rainbowY";
+    logWriter.println(headerLine);
+    logWriter.flush();
   }
   
   void add(Selection selection) {    
@@ -17,6 +31,14 @@ class History {
     PVector p = new PVector(selection.x, y);
     marks.add(p);
     selection.mark = p;
+    
+    String logLine = millis()+","+selection.section.name;
+    for (float amount : selection.amounts) {
+      logLine += ","+amount;
+    }
+    logLine += ","+p.x+","+p.y;
+    logWriter.println(logLine);
+    logWriter.flush();
   }
   
   Section[] sectionsForSelections() {

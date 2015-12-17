@@ -7,9 +7,8 @@ class Ingredient {
   // variables
   final PVector[] controlPoints;  // spline control points, absolute pixel scale
   final float[] yValues;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
-  color strokeColor;
+  color strokeColor = 255;
   int strokeWeight = 5;
-  boolean displayOnRightSide = false;
   int fillLevel = 0;  // in milliliters
   
   Ingredient(int index, String name, int numSections) {
@@ -20,7 +19,6 @@ class Ingredient {
       controlPoints[i] = new PVector();
     }
     this.yValues = new float[SCREEN_WIDTH];
-    this.strokeColor = INGREDIENT_COLORS[this.index];    
   }
   
   void setSignificantPoints(Section[] sections) {

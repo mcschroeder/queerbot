@@ -1,7 +1,7 @@
-Butch,Y,Queer,X,Femme,name,side
-.90, .70, .00, .00, .00, Whisky,L
-.00, .00, .30, .90, .50, Elderberry,L
-.00, .20, .90, .30, .00, Vodka,R
-.10, .70, .30, .10, .10, Almdudler,R
-.00, .10, .30, .50, .90, Wine,R
-.80, .30, .80, .70, .20, Lemon Soda,L
+Butch,Y,Queer,X,Femme,name,color
+.90, .70, .00, .00, .00, Whisky, 925e2d
+.00, .00, .30, .90, .50, Elderberry, fff1d0
+.00, .20, .90, .30, .00, Vodka, 086788
+.10, .70, .30, .10, .10, Almdudler, f0c808
+.00, .10, .30, .50, .90, Wine, dd1c1a
+.80, .30, .80, .70, .20, Lemon Soda, 06aed5

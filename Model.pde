@@ -16,9 +16,7 @@ class Model {
   public Model(String ingredientsFile, String inputRulesFile, String coverRulesFile) {    
     Table table = loadTable(ingredientsFile, "header");
     table.trim();
-    
-    this.history = new History();
-        
+            
     sections = new Section[table.getColumnCount()-2];
     sectionsByName = new HashMap();
     ingredients = new Ingredient[table.getRowCount()];    
@@ -28,15 +26,17 @@ class Model {
       for (int j = 0; j < ingredients.length; j++) {
         TableRow row = table.getRow(j);
         sections[i].significantAmounts[j] = row.getFloat(i);
-        if (ingredients[j] == null) {
+        if (ingredients[j] == null) { 
           ingredients[j] = new Ingredient(j, row.getString("name"), sections.length);
-          ingredients[j].displayOnRightSide = row.getString("side").equals("R");
+          ingredients[j].strokeColor = color(unhex(row.getString("color")) | 0xFF000000);
         }
       }
     }
     for (Ingredient ingredient : ingredients) {
       ingredient.setSignificantPoints(sections);
     }
+    
+    this.history = new History(ingredients);
     
     this.inputRules = loadInputRules(inputRulesFile, sectionsByName);
     this.coverRules = loadCoverRules(coverRulesFile, sectionsByName);
