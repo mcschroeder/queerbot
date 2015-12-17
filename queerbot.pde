@@ -170,11 +170,11 @@ void serialEvent(Serial port) {
       analogValueChanged(x);
       break;
     case 'B':
-      if (line.length() < 3) return;
-      int buttonID = int(line.substring(2));
-      if (buttonID == 0) selectButtonPressed();
-      else if (buttonID == 1) confirmButtonPressed();
-      else if (buttonID == 2) maintenanceButtonPressed();
+      if (line.length() < 2) return;
+      int buttonID = int(line.substring(1));
+      if (buttonID == SELECT_BUTTON_ID) selectButtonPressed();
+      else if (buttonID == CONFIRM_BUTTON_ID) confirmButtonPressed();
+      else if (buttonID == MAINTENANCE_BUTTON_ID) maintenanceButtonPressed();
       break;
     case 'F':
       if (line.length() < 3) return;

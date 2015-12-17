@@ -1,7 +1,7 @@
 final boolean DEBUG_LOG_RULES = true;
 final boolean DEBUG_SHOW_FPS = false;
 final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = false;
-final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
+final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = false;
 final boolean DEBUG_SIMULATE_MIXING = false;
 final boolean DEBUG_SIMULATE_HARDWARE = false;
 
@@ -10,6 +10,9 @@ final int MAX_FILL_LEVEL = 1500;  // milliliters
 
 final int LEVER_MIN = 434;
 final int LEVER_MAX = 774;
+final int SELECT_BUTTON_ID = 4;
+final int CONFIRM_BUTTON_ID = 5;
+final int MAINTENANCE_BUTTON_ID = 3;
 
 final int SELECTION_HISTORY_SIZE = 10;
 
