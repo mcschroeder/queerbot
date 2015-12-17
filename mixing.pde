@@ -72,7 +72,7 @@ void mixNextIngredient() {
     if (DEBUG_SIMULATE_MIXING) {
       mixingInProgress = true;
     } else {
-      // TODO
+      openValve(index, amount);
     }
   }
 }

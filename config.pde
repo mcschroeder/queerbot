@@ -6,6 +6,10 @@ final boolean DEBUG_SIMULATE_MIXING = false;
 final boolean DEBUG_SIMULATE_HARDWARE = false;
 
 final int CUP_SIZE = 150;  // milliliters
+final int MAX_FILL_LEVEL = 1500;  // milliliters
+
+final int LEVER_MIN = 434;
+final int LEVER_MAX = 774;
 
 final int SELECTION_HISTORY_SIZE = 10;
 

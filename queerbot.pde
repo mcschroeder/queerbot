@@ -3,7 +3,7 @@ import processing.serial.*;
 enum QueerbotState {
   SELECTING,
   MIXING,
-  //WAITING_FOR_REFILL,
+  MAINTENANCE,
   ERROR
 }
 
@@ -48,7 +48,7 @@ void draw() {
   switch (state) {
     case SELECTING: drawSelectingInterface(); break;
     case MIXING: drawMixingInterface(); break;
-    //case WAITING_FOR_REFILL: drawRefillInterface(); break;
+    case MAINTENANCE: drawMaintenanceInterface(); break;
     case ERROR: drawErrorInterface(); break;
   }
     
@@ -84,7 +84,7 @@ void drawErrorInterface() {
   while (textWidth(_errorMsg) > SCREEN_WIDTH-50) {
     textSize(size--);
   }
-  text(_errorMsg, SCREEN_WIDTH/2, SCREEN_WIDTH/2);  
+  text(_errorMsg, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);  
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,6 +96,7 @@ void analogValueChanged(float x) {
   analogValue = x;
   switch (state) {
     case SELECTING: moveCursor(x); break;
+    case MAINTENANCE: _maint_moveCursor(x); break;
     default: break;
   }
 }
@@ -103,6 +104,7 @@ void analogValueChanged(float x) {
 void selectButtonPressed() {
   switch (state) {
     case SELECTING: select(); break;
+    case MAINTENANCE: _maint_select(); break;
     default: break;
   }
 }
@@ -110,6 +112,15 @@ void selectButtonPressed() {
 void confirmButtonPressed() {
   switch (state) {
     case SELECTING: confirm(); break;
+    case MAINTENANCE: _maint_confirm(); break;
+    default: break;
+  }
+}
+
+void maintenanceButtonPressed() {
+  switch (state) {
+    case SELECTING: gotoMaintenanceMode(); break;
+    case MAINTENANCE: gotoSelecting(); break;
     default: break;
   }
 }
@@ -117,9 +128,19 @@ void confirmButtonPressed() {
 void didReceiveFillLevel(int index, int amount) {
   if (index >= model.ingredients.length) return;
   model.ingredients[index].fillLevel = amount;
-  if (state == QueerbotState.MIXING) {
-    mixNextIngredient();
+  switch (state) {
+    case MIXING: mixNextIngredient(); break;
+    case MAINTENANCE: redraw();
+    default: break;
   }
+}
+
+void openValve(int index, int amount) {
+  port.write("V " + index + " " + amount + "\n");
+}
+
+void setFillLevel(int index, int amount) {
+  port.write("F " + index + " " + amount + "\n");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -133,7 +154,7 @@ void serialEvent(Serial port) {
     case 'A':
       if (line.length() < 3) return;
       int value = int(line.substring(2));
-      float x = constrain(norm(value, 0, 1024), 0, 1);
+      float x = constrain(norm(value, LEVER_MIN, LEVER_MAX), 0, 1);
       analogValueChanged(x);
       break;
     case 'B':
@@ -141,6 +162,7 @@ void serialEvent(Serial port) {
       int buttonID = int(line.substring(2));
       if (buttonID == 0) selectButtonPressed();
       else if (buttonID == 1) confirmButtonPressed();
+      else if (buttonID == 2) maintenanceButtonPressed();
       break;
     case 'F':
       if (line.length() < 3) return;
@@ -174,6 +196,6 @@ void keyPressed() {
         confirmButtonPressed();
       }
       break;
-    //case 'm': gotoMaintenanceMode(); break;
+    case 'm': maintenanceButtonPressed(); break;
   }
 }
