@@ -18,12 +18,14 @@ Serial port;
 PrintWriter hwLogWriter;
 
 void settings() {
-  boolean fullscreen = false;
+  boolean raspberry = false;
   try {
-    fullscreen = (null != System.getenv("QUEERBOT_REVISION"));
+    raspberry = (null != System.getenv("QUEERBOT_REVISION"));
   } catch (Exception e) {}
-  if (fullscreen) {
+  if (raspberry) {
     fullScreen();
+    DEBUG_SIMULATE_HARDWARE = false;
+    DEBUG_SIMULATE_MIXING = false;
   } else {
     size(SCREEN_WIDTH, SCREEN_HEIGHT);
   }
@@ -51,7 +53,7 @@ void setup() {
       gotoError(e.getLocalizedMessage());      
       return;
     }
-  }
+  }  
   
   state = QueerbotState.SELECTING;
 }

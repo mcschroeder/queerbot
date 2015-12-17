@@ -1,9 +1,8 @@
-final boolean DEBUG_LOG_RULES = true;
 final boolean DEBUG_SHOW_FPS = false;
-final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = false;
+final boolean DEBUG_LOG_RULES = true;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = false;
-final boolean DEBUG_SIMULATE_MIXING = true;
-final boolean DEBUG_SIMULATE_HARDWARE = true;
+boolean DEBUG_SIMULATE_MIXING = true;
+boolean DEBUG_SIMULATE_HARDWARE = true;
 final boolean DEBUG_LOG_HARDWARE = true;
 
 final int CUP_SIZE = 150;  // milliliters
