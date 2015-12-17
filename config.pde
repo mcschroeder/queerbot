@@ -4,6 +4,7 @@ final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = false;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = false;
 final boolean DEBUG_SIMULATE_MIXING = false;
 final boolean DEBUG_SIMULATE_HARDWARE = false;
+final boolean DEBUG_LOG_HARDWARE = true;
 
 final int CUP_SIZE = 150;  // milliliters
 final int MAX_FILL_LEVEL = 1500;  // milliliters

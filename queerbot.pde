@@ -15,6 +15,7 @@ Cursor cursor2;
 Cursor activeCursor;
 Selection activeDrink;
 Serial port;
+PrintWriter hwLogWriter;
 
 void settings() {
   boolean fullscreen = false;
@@ -38,6 +39,10 @@ void setup() {
   cursor2.hidden = true;
   activeCursor = cursor1;
   
+  if (DEBUG_LOG_HARDWARE) {
+    hwLogWriter = createWriter("log/serial.log");
+  }
+  
   if (!DEBUG_SIMULATE_HARDWARE) {
     try {
       port = new Serial(this, "/dev/ttyUSB0", 9600);
@@ -48,10 +53,12 @@ void setup() {
     }
   }
   
-  state = QueerbotState.SELECTING;    
+  state = QueerbotState.SELECTING;
 }
 
 void stop() {
+  hwLogWriter.flush();
+  hwLogWriter.close();
   model.history.logWriter.flush();
   model.history.logWriter.close();
 }
@@ -148,17 +155,30 @@ void didReceiveFillLevel(int index, int amount) {
 }
 
 void openValve(int index, int amount) {
-  port.write("V " + index + " " + amount + "\n");
+  sendCommand("V " + index + " " + amount + "\n");
 }
 
 void setFillLevel(int index, int amount) {
-  port.write("F " + index + " " + amount + "\n");
+  sendCommand("F " + index + " " + amount + "\n");
+}
+
+void sendCommand(String cmd) {
+  if (DEBUG_LOG_HARDWARE && hwLogWriter != null) {
+    hwLogWriter.println(cmd);
+    hwLogWriter.flush();
+  }
+  port.write(cmd);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void serialEvent(Serial port) {
   String line = port.readString();
+  if (DEBUG_LOG_HARDWARE && hwLogWriter != null) {
+    hwLogWriter.print(">");
+    hwLogWriter.println(line);
+    hwLogWriter.flush();
+  }
   if (line == null) return;
   line = trim(line);
   if (line.isEmpty()) return;
@@ -184,8 +204,13 @@ void serialEvent(Serial port) {
       int amount = int(tokens[1]);
       didReceiveFillLevel(ingredientID, amount);
       break;
+    case 'E':
+      // TODO
+      // E1=falscher index  
+      // E2=zu hoher amount 
+      // E3=über max fill level auffüllen
     case '#':
-      print(line);
+      println(line);
       break;
   }
 }

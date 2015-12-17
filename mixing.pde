@@ -8,6 +8,7 @@ void drawMixingInterface() {
   
   if (activeDrink == null) return;
   
+  /*
   if (_blurredBackground == null) {    
     background(BACKGROUND_COLOR);
     drawCurves();
@@ -20,6 +21,7 @@ void drawMixingInterface() {
     _blurredBackground = get();
   }
   image(_blurredBackground, 0, 0);
+  */
   
   drawLegend(getSelection(activeDrink.x, model));
   model.history.drawMark(activeDrink.mark);
