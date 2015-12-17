@@ -4,6 +4,8 @@ final boolean DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS = false;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
 final boolean DEBUG_SIMULATE_HARDWARE = true;
 
+final int CUP_SIZE = 150;  // milliliters
+
 final int SELECTION_HISTORY_SIZE = 10;
 
 final color BACKGROUND_COLOR = color(0);

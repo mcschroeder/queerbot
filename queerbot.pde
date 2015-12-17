@@ -114,6 +114,14 @@ void confirmButtonPressed() {
   }
 }
 
+void didReceiveFillLevel(int index, int amount) {
+  if (index >= model.ingredients.length) return;
+  model.ingredients[index].fillLevel = amount;
+  if (state == QueerbotState.MIXING) {
+    mixNextIngredient();
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void serialEvent(Serial port) {
@@ -133,6 +141,14 @@ void serialEvent(Serial port) {
       int buttonID = int(line.substring(2));
       if (buttonID == 0) selectButtonPressed();
       else if (buttonID == 1) confirmButtonPressed();
+      break;
+    case 'F':
+      if (line.length() < 3) return;
+      String[] tokens = splitTokens(line.substring(2), " ");
+      if (tokens.length < 2) return;
+      int ingredientID = int(tokens[0]);
+      int amount = int(tokens[1]);
+      didReceiveFillLevel(ingredientID, amount);
       break;
     case '#':
       print(line);

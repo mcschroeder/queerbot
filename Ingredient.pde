@@ -10,7 +10,7 @@ class Ingredient {
   color strokeColor;
   int strokeWeight = 5;
   boolean displayOnRightSide = false;
-  float fillLevel = 0;  // 0-1
+  int fillLevel = 0;  // in milliliters
   
   Ingredient(int index, String name, int numSections) {
     this.index = index;

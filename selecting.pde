@@ -4,9 +4,6 @@ void drawSelectingInterface() {
   if (activeCursor != null) {
     drawLegend(getSelection(activeCursor.x, model));
   }
-  for (Section section : model.sections) {
-    section.drawBackground();
-  }
   cursor1.drawBackground();
   cursor2.drawBackground();
   drawCurves();
@@ -66,12 +63,15 @@ void drawCurves() {
 
 void gotoSelecting() {
   noLoop();
-  state = QueerbotState.SELECTING;
+  state = QueerbotState.SELECTING;  
   cursor1.hidden = false;
   cursor2.hidden = true;
+  cursor1.fillLevel = cursor1.fillToLevel = 0;
+  cursor2.fillLevel = cursor2.fillToLevel = 0;
   activeCursor = cursor1;
   updateSelectedSections();
-  analogValueChanged(analogValue);  
+  analogValueChanged(analogValue);
+  redraw();
 }
 
 void moveCursor(float pos) {
@@ -120,7 +120,6 @@ void confirm() {
 void updateSelectedSections() {
   for (Section section : model.sections) {
     section.selected = false;
-    section.dimmed = false;
   }
   if (cursor1 != activeCursor && !cursor1.hidden) {
     getSelection(cursor1.x, model).section.selected = true;

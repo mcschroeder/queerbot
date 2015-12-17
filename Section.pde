@@ -16,7 +16,6 @@ class Section {
   boolean covered = true;
   boolean selected = false;
   boolean highlighted = false;
-  boolean dimmed = false;
   
   Section(int index, String name, int numSections, int numIngredients) {
     this.index = index;
@@ -28,38 +27,34 @@ class Section {
     this.rightX = leftX + sectionWidth;
   }
   
-  void drawBackground() {
-    if (!covered) {
-      if (this.index > 0) {
-        noFill();
-        stroke(255, 60);
-        strokeWeight(1);        
-        line(this.leftX, CANVAS_TOP, this.leftX, height); 
-      }
-    }
-  }
-      
   void drawForeground() {
     if (covered) {
       noStroke();
       fill(BACKGROUND_COLOR);
       rect(leftX, CANVAS_TOP, sectionWidth, SCREEN_HEIGHT-CANVAS_TOP);
     }
-    if (dimmed && !highlighted) {
-      noStroke();
-      fill(BACKGROUND_COLOR, 200);
-      rect(leftX, CANVAS_TOP, sectionWidth, SCREEN_HEIGHT-CANVAS_TOP);
-    }
-}
+  }
     
   void drawLabel() {       
     if (covered && !DEBUG_SHOW_INFO_FOR_COVERED_SECTIONS) {
       return;
     }
-    fill(255, dimmed ? 100 : 255);
+    
+    if (selected || highlighted) {
+      noStroke();
+      fill(255);
+      rectMode(CORNER);
+      float w = textWidth(name)+20;
+      float h = textAscent()+textDescent()+5;
+      rect(centerX-w/2, SECTION_LABELS_TOP-2, w, h, 5,5,5,5);
+      fill(0);
+    } else {
+      fill(255);
+    }
+    //fill(255, dimmed ? 100 : 255);
     textSize(24);
     textAlign(CENTER,TOP);
-    text(name, centerX, SECTION_LABELS_TOP);    
+    text(name, centerX, SECTION_LABELS_TOP);  
   }
 }
 

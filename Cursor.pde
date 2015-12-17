@@ -9,10 +9,13 @@ class Cursor {
   int x = 0;
   int drawingX = 0;  // to make sure background and foreground are in lock-step
   boolean hidden = false;
-  
-  float amountFilled = 0.3;
-  float currentlyFilling = 0.2;
     
+  float fillLevel = 0;  // 0 to 1
+  float fillToLevel = 0;  // 0 to 1
+  int blinkInterval = 100;  // in milliseconds
+  private int _prevMillis;
+  private boolean _blink;
+  
   Cursor(Model model) {
     this.model = model;
     update(0);
@@ -28,36 +31,39 @@ class Cursor {
     noStroke();
     fill(CURSOR_BACKGROUND_COLOR);
     rect(drawingX-(CURSOR_WIDTH/2), CANVAS_TOP, CURSOR_WIDTH, CANVAS_BOTTOM-CANVAS_TOP, 
-         (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2));
-         
-    float amountFilledTop = map(amountFilled, 0, 1, 0, CANVAS_HEIGHT-3);
-    float currentlyFillingTop = map(amountFilled+currentlyFilling, 0, 1, 0, CANVAS_HEIGHT-3);
-    color c = gradient(this.x, 0, SCREEN_WIDTH, RAINBOW_COLORS);
-    if (blink) {
-      fill(c);
-      rect(drawingX-(CURSOR_WIDTH/2), amountFilledTop, CURSOR_WIDTH, CANVAS_BOTTOM-amountFilledTop);
-    }    
-    if (millis() - lastTime >= 200) {
-      lastTime = millis();
-      blink = !blink;
-    }
-
-    
+         (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2));    
   }
   
-  boolean blink = false;
-  int lastTime;
-    
   void drawForeground() {
     if (hidden) return;
-
-
+    int x = drawingX-(CURSOR_WIDTH/2);
+    
+    color c = gradient(drawingX, 0, SCREEN_WIDTH, RAINBOW_COLORS);
+    if (fillLevel > 0) {
+      float y = map(fillLevel, 0, 1, CANVAS_BOTTOM-3, CANVAS_TOP+3);
+      noStroke();
+      fill(c);
+      rect(x, y, CURSOR_WIDTH, CANVAS_BOTTOM-3-y);
+    }
+    if (fillToLevel - fillLevel > 0) {
+      int currentMillis = millis();
+      if (currentMillis - _prevMillis >= blinkInterval) {
+        _prevMillis = currentMillis;
+        _blink = !_blink;
+      }
+      if (!_blink) {
+        float y = map(fillToLevel, 0, 1, CANVAS_BOTTOM-3, CANVAS_TOP+3);
+        noStroke();
+        fill(c);
+        rect(x, y, CURSOR_WIDTH, CANVAS_BOTTOM-3-y);
+      }
+    }
 
     noFill();
     strokeWeight(10);
     stroke(CURSOR_FOREGROUND_COLOR);
-    rect(drawingX-(CURSOR_WIDTH/2), CANVAS_TOP, CURSOR_WIDTH, CANVAS_BOTTOM-CANVAS_TOP, 
-         (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2));  
+    rect(x, CANVAS_TOP, CURSOR_WIDTH, CANVAS_BOTTOM-CANVAS_TOP, 
+         (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2), (CURSOR_WIDTH/2));
   }
   
   void clipArea() {
