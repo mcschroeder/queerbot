@@ -17,8 +17,15 @@ Selection activeDrink;
 Serial port;
 
 void settings() {
-  size(SCREEN_WIDTH, SCREEN_HEIGHT);
-  //fullScreen();
+  boolean fullscreen = false;
+  try {
+    fullscreen = (null != System.getenv("QUEERBOT_REVISION"));
+  } catch (Exception e) {}
+  if (fullscreen) {
+    fullScreen();
+  } else {
+    size(SCREEN_WIDTH, SCREEN_HEIGHT);
+  }
 }
 
 void setup() {
