@@ -138,9 +138,8 @@ void confirmButtonPressed() {
 
 void maintenanceButtonPressed() {
   switch (state) {
-    case SELECTING: gotoMaintenanceMode(); break;
     case MAINTENANCE: gotoSelecting(); break;
-    default: break;
+    default: gotoMaintenanceMode(); break;
   }
 }
 
@@ -176,7 +175,7 @@ void serialEvent(Serial port) {
   String line = port.readString();
   if (DEBUG_LOG_HARDWARE && hwLogWriter != null) {
     hwLogWriter.print(">");
-    hwLogWriter.println(line);
+    hwLogWriter.print(line);
     hwLogWriter.flush();
   }
   if (line == null) return;
@@ -205,10 +204,18 @@ void serialEvent(Serial port) {
       didReceiveFillLevel(ingredientID, amount);
       break;
     case 'E':
-      // TODO
-      // E1=falscher index  
-      // E2=zu hoher amount 
-      // E3=über max fill level auffüllen
+      String msg = line; 
+      if (line.length() > 1) {
+        int code = int(line.substring(1));
+        switch (code) {
+          case 1: line += "wrong index"; break;
+          case 2: line += "amount too high"; break;
+          case 3: line += "fill level beyond limit"; break;
+          default: break;
+        }
+      }
+      gotoError(msg);
+      break;
     case '#':
       println(line);
       break;
