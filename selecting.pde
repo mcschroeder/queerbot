@@ -114,7 +114,7 @@ void confirm() {
   }
   result.section.highlighted = true;
   result.section.selected = true;
-  gotoSelecting();
+  redraw();
   gotoMixing(result);
 }
 

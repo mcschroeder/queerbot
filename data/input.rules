@@ -8,8 +8,8 @@ Femme,Femme -> Femme,Femme -> Femme
     Queer,Y -> Y           -> hybrid
     Y,Femme ->             -> hybrid
 Butch,Femme -> Queer,Queer -> Queer
-Butch,Queer -> X           -> X
+Butch,Queer -> Y           -> Y
         X,Y -> Queer       -> Queer
-Queer,Femme -> Y           -> Y
+Queer,Femme -> X           -> X
     Y,Butch -> Queer       -> Queer
     Femme,X -> Queer       -> Queer

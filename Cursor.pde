@@ -22,7 +22,11 @@ class Cursor {
   }  
   
   void update(int x) {
-    this.x = clampToRanges(x, model.rangesForUncoveredSections);
+    update(x, true);
+  }
+  
+  void update(int x, boolean clamp) {
+    this.x = clamp ? clampToRanges(x, model.rangesForUncoveredSections) : x;
   }
   
   void drawBackground() {

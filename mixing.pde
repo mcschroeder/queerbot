@@ -8,7 +8,9 @@ void drawMixingInterface() {
   
   if (activeDrink == null) return;
   
-  /*
+  //background(BACKGROUND_COLOR);
+  
+  
   if (_blurredBackground == null) {    
     background(BACKGROUND_COLOR);
     drawCurves();
@@ -21,7 +23,7 @@ void drawMixingInterface() {
     _blurredBackground = get();
   }
   image(_blurredBackground, 0, 0);
-  */
+  
   
   drawLegend(getSelection(activeDrink.x, model));
   model.history.drawMark(activeDrink.mark);
@@ -42,7 +44,7 @@ void gotoMixing(Selection drink) {
   assert drink != null;
   activeDrink = drink;
   state = QueerbotState.MIXING;
-  cursor1.update(drink.x);
+  cursor1.update(drink.x, false);
   cursor1.fillLevel = 0;
   cursor1.fillToLevel = 0;
   for (Section section : model.sections) {
