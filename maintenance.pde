@@ -112,7 +112,6 @@ void _maint_moveCursor(float x) {
       _maint_selectedAction = (int)map(x, 0, 1, 0, 1);
       break;
   }
-  analogValueChanged(analogValue);
   redraw();
 }
 
@@ -154,7 +153,7 @@ void _maint_confirm() {
       break;
     default:
       break;
-  }
+  }  
   analogValueChanged(analogValue);
   redraw();
 }
