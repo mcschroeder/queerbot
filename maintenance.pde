@@ -158,5 +158,6 @@ void _maint_confirm() {
 void gotoMaintenanceMode() {
   state = QueerbotState.MAINTENANCE;
   _maint_state = MaintenanceState.SELECTING_BOTTLE;
+  analogValueChanged(analogValue);
   redraw();
 }
