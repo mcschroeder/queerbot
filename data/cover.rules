@@ -1,11 +1,13 @@
 Queer > .20 -> +Queer
     X > .07 -> +X
     Y > .07 -> +Y
+Queer > .50, X < .80 -> +Butch
+Queer > .50, Y < .80 -> +Femme
 
-Butch < .20,     Y > .07, Femme > .20 -> -Butch
-Butch < .20,     Y > .07, Queer > .20 -> -Butch
-Femme < .20,     X > .07, Butch > .20 -> -Femme
-Femme < .20,     X > .07, Queer > .20 -> -Femme
+Butch < .20,     X > .07, Femme > .20 -> -Butch
+Butch < .20,     X > .07, Queer > .20 -> -Butch
+Femme < .20,     Y > .07, Butch > .20 -> -Femme
+Femme < .20,     Y > .07, Queer > .20 -> -Femme
 Queer < .20, Butch > .20, Femme > .20 -> -Queer
-    X < .07, Femme > .20              -> -X
-    Y < .07, Butch > .20              -> -Y
+    X < .07, Butch > .20              -> -X
+    Y < .07, Femme > .20              -> -Y

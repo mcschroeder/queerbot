@@ -1,7 +1,7 @@
 Butch,Butch -> Butch,Butch -> Butch
-        X,X -> Butch       -> X
+        X,X -> Femme,Femme -> X
 Queer,Queer -> Y,X         -> Queer
-        Y,Y -> Femme       -> Y
+        Y,Y -> Butch,Butch -> Y
 Femme,Femme -> Femme,Femme -> Femme
     Butch,X ->             -> hybrid
     X,Queer -> X           -> hybrid
