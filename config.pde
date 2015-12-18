@@ -5,8 +5,13 @@ boolean DEBUG_SIMULATE_MIXING = true;
 boolean DEBUG_SIMULATE_HARDWARE = true;
 final boolean DEBUG_LOG_HARDWARE = true;
 
-final int CUP_SIZE = 100;  // milliliters
+int CUP_SIZE = 100;  // milliliters
 final int MAX_FILL_LEVEL = 1400;  // milliliters
+
+// for maintenance mode options
+final int CUP_SIZE_MIN = 50;
+final int CUP_SIZE_MAX = 150;
+final int CUP_SIZE_INCREMENT = 10;
 
 final int LEVER_MIN = 434;
 final int LEVER_MAX = 774;

@@ -6,7 +6,6 @@ enum MaintenanceState {
 MaintenanceState _maint_state;
 int _maint_selectedBottle;
 int _maint_selectedAction;
-String[] _maint_actions = {"Mark Refilled", "Gimme Some!"}; 
 
 void drawMaintenanceInterface() {
   assert state == QueerbotState.MAINTENANCE;  
@@ -65,11 +64,11 @@ void drawMaintenanceInterface() {
       ellipseMode(CENTER);
       ellipse(x + w/2, y+h+100, 30, 30);
 
-      if (_maint_state == MaintenanceState.SELECTING_ACTION) { 
-        drawMenu(_maint_actions, _maint_selectedAction, x + w/2, y+h+3+200+20);
+      if (_maint_state == MaintenanceState.SELECTING_ACTION) {
+        String[] actions = {"Mark Refilled", "Gimme Some!", "Cup Size = "+CUP_SIZE};
+        drawMenu(actions, _maint_selectedAction, x + w/2, y+h+3+200+20);
       }
-    }
-    
+    }    
     
     x += w + margin;
   }  
@@ -77,12 +76,16 @@ void drawMaintenanceInterface() {
   noLoop();
 }
 
+final int _maint_MENU_TOP_MARGIN = 40;
+final int _maint_MENU_LEFT_MARGIN = 20;
+
 void drawMenu(String[] items, int selectedIndex, float centerX, float topY) {
   textSize(24);
-  float y = topY + 40;
+  float y = topY + _maint_MENU_TOP_MARGIN;
   for (int i = 0; i < items.length; i++) {
     String item = items[i];
-    float x = max(10, centerX - textWidth(item)/2);
+    float x = max(_maint_MENU_LEFT_MARGIN, centerX - textWidth(item)/2);
+    x = min(x, SCREEN_WIDTH-_maint_MENU_LEFT_MARGIN-textWidth(item));
     if (i == selectedIndex) {
       noStroke();
       fill(255);
@@ -118,10 +121,9 @@ void _maint_select() {
       _maint_selectedAction = 0;
       _maint_state = MaintenanceState.SELECTING_ACTION;
       break;
-    case SELECTING_ACTION:
-      if (_maint_selectedAction == 0) {
-        _maint_selectedAction = 1;
-      } else if (_maint_selectedAction == 1) {
+    case SELECTING_ACTION:    
+      _maint_selectedAction = (_maint_selectedAction+1);
+      if (_maint_selectedAction == 3) {
         _maint_state = MaintenanceState.SELECTING_BOTTLE;
       }
       break;
@@ -140,6 +142,7 @@ void _maint_confirm() {
           if (DEBUG_SIMULATE_MIXING) {
             didReceiveFillLevel(_maint_selectedBottle, MAX_FILL_LEVEL);
           }
+          _maint_state = MaintenanceState.SELECTING_BOTTLE;
           break;
         case 1: 
           openValve(_maint_selectedBottle, CUP_SIZE);
@@ -147,10 +150,15 @@ void _maint_confirm() {
             int level = model.ingredients[_maint_selectedBottle].fillLevel - CUP_SIZE;
             didReceiveFillLevel(_maint_selectedBottle, level);
           }
+          _maint_state = MaintenanceState.SELECTING_BOTTLE;
+          break;
+        case 2:
+          CUP_SIZE += CUP_SIZE_INCREMENT;
+          if (CUP_SIZE > CUP_SIZE_MAX) CUP_SIZE = CUP_SIZE_MIN;
+          _maint_state = MaintenanceState.SELECTING_ACTION;
           break;
         default: break;
       }
-      _maint_state = MaintenanceState.SELECTING_BOTTLE;
       break;
   }  
   analogValueChanged(analogValue);
