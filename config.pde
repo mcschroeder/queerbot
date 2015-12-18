@@ -1,5 +1,5 @@
 final boolean DEBUG_SHOW_FPS = false;
-final boolean DEBUG_LOG_RULES = true;
+final boolean DEBUG_LOG_RULES = false;
 final boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = false;
 boolean DEBUG_SIMULATE_MIXING = true;
 boolean DEBUG_SIMULATE_HARDWARE = true;

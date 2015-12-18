@@ -272,5 +272,12 @@ void keyPressed() {
       }
       break;
     case 'm': maintenanceButtonPressed(); break;
+    case CODED:
+      switch (keyCode) {
+        case LEFT: analogValueChanged(constrain(analogValue-.1, 0, 1)); break;
+        case RIGHT: analogValueChanged(constrain(analogValue+.1, 0, 1)); break;
+        default: break;
+      }
+    default: break;
   }
 }

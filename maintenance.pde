@@ -6,6 +6,7 @@ enum MaintenanceState {
 MaintenanceState _maint_state;
 int _maint_selectedBottle;
 int _maint_selectedAction;
+String[] _maint_actions = {"Mark Refilled", "Gimme Some!"}; 
 
 void drawMaintenanceInterface() {
   assert state == QueerbotState.MAINTENANCE;  
@@ -19,7 +20,7 @@ void drawMaintenanceInterface() {
   if (rev != null) {
     textSize(12);
     textAlign(LEFT,BOTTOM);
-    fill(42);
+    fill(120);
     text(rev, 10, SCREEN_HEIGHT-10);
   }
   
@@ -63,33 +64,25 @@ void drawMaintenanceInterface() {
       fill(255);
       ellipseMode(CENTER);
       ellipse(x + w/2, y+h+100, 30, 30);
+
+      if (_maint_state == MaintenanceState.SELECTING_ACTION) { 
+        drawMenu(_maint_actions, _maint_selectedAction, x + w/2, y+h+3+200+20);
+      }
     }
+    
     
     x += w + margin;
   }  
-  
-  if (_maint_state == MaintenanceState.SELECTING_ACTION) {
-    String[] items = {"Mark Refilled", "Gimme Some!"}; 
-    drawMenu(items, _maint_selectedAction, 400);
-  }  
-  
+
   noLoop();
 }
 
-void drawMenu(String[] items, int selectedIndex, int y) {
-  int MENU_PADDING = 60;
+void drawMenu(String[] items, int selectedIndex, float centerX, float topY) {
   textSize(24);
-  float menuWidth = 0;
-  for (String item : items) {
-    menuWidth += textWidth(item) + MENU_PADDING;
-  }
-  menuWidth -= MENU_PADDING;
-  
-  textAlign(LEFT, TOP);
-  float x = SCREEN_WIDTH/2 - menuWidth/2;
+  float y = topY + 40;
   for (int i = 0; i < items.length; i++) {
     String item = items[i];
-    
+    float x = max(10, centerX - textWidth(item)/2);
     if (i == selectedIndex) {
       noStroke();
       fill(255);
@@ -97,20 +90,24 @@ void drawMenu(String[] items, int selectedIndex, int y) {
       fill(0);
     } else {
       fill(255);
-    }    
+    }
+    textAlign(LEFT, TOP);
     text(item, x, y);
-    x += textWidth(item) + MENU_PADDING;    
+
+    y += textAscent()+textDescent()+20;
   }
 }
 
 void _maint_moveCursor(float x) {
   switch (_maint_state) {
     case SELECTING_BOTTLE:
-      _maint_selectedBottle = (int)map(x, 0, 1, 0, model.ingredients.length-1);
+      int index = (int)map(x, 0, 1, 0, model.ingredients.length);
+      if (index >= model.ingredients.length) {
+        index = model.ingredients.length-1;
+      }
+      _maint_selectedBottle = index;
       break;
-    case SELECTING_ACTION:
-      _maint_selectedAction = (int)map(x, 0, 1, 0, 1);
-      break;
+    case SELECTING_ACTION: break;
   }
   redraw();
 }
@@ -118,12 +115,15 @@ void _maint_moveCursor(float x) {
 void _maint_select() {
   switch (_maint_state) {
     case SELECTING_BOTTLE:
+      _maint_selectedAction = 0;
       _maint_state = MaintenanceState.SELECTING_ACTION;
       break;
     case SELECTING_ACTION:
-      _maint_state = MaintenanceState.SELECTING_BOTTLE;
-      break;
-    default:
+      if (_maint_selectedAction == 0) {
+        _maint_selectedAction = 1;
+      } else if (_maint_selectedAction == 1) {
+        _maint_state = MaintenanceState.SELECTING_BOTTLE;
+      }
       break;
   }
   analogValueChanged(analogValue);
@@ -132,6 +132,7 @@ void _maint_select() {
 
 void _maint_confirm() {
   switch (_maint_state) {
+    case SELECTING_BOTTLE: break;
     case SELECTING_ACTION:
       switch (_maint_selectedAction) {
         case 0: 
@@ -150,8 +151,6 @@ void _maint_confirm() {
         default: break;
       }
       _maint_state = MaintenanceState.SELECTING_BOTTLE;
-      break;
-    default:
       break;
   }  
   analogValueChanged(analogValue);
