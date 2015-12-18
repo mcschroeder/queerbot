@@ -73,7 +73,7 @@ void gotoSelecting() {
   updateSelectedSections();
   analogValueChanged(analogValue);
   loop();  
-  //checkFillLevels();
+  checkFillLevels();
 }
 
 void moveCursor(float pos) {
@@ -137,5 +137,25 @@ void updateHighlightedSections() {
   }
   if (activeCursor != null) {
     getSelection(activeCursor.x, model).section.highlighted = true;
+  }
+}
+
+void checkFillLevels() {
+  List<Ingredient> empties = new ArrayList();
+  for (Ingredient ingredient : model.ingredients) {
+    if (ingredient.fillLevel < CUP_SIZE) {
+      empties.add(ingredient);
+    }
+  }
+  if (!empties.isEmpty()) {
+    String msg = "Please refill ";
+    msg += empties.get(0).name;
+    for (int i = 1; i < empties.size()-1; i++) {
+      msg += ", " + empties.get(i).name;
+    }
+    if (empties.size() > 1) {
+      msg += " and " + empties.get(empties.size()-1).name;
+    }
+    gotoError(msg);
   }
 }

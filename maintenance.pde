@@ -132,8 +132,19 @@ void _maint_confirm() {
   switch (_maint_state) {
     case SELECTING_ACTION:
       switch (_maint_selectedAction) {
-        case 0: setFillLevel(_maint_selectedBottle, MAX_FILL_LEVEL); break;
-        case 1: openValve(_maint_selectedBottle, CUP_SIZE); break;
+        case 0: 
+          setFillLevel(_maint_selectedBottle, MAX_FILL_LEVEL);
+          if (DEBUG_SIMULATE_MIXING) {
+            didReceiveFillLevel(_maint_selectedBottle, MAX_FILL_LEVEL);
+          }
+          break;
+        case 1: 
+          openValve(_maint_selectedBottle, CUP_SIZE);
+          if (DEBUG_SIMULATE_MIXING) {
+            int level = model.ingredients[_maint_selectedBottle].fillLevel - CUP_SIZE;
+            didReceiveFillLevel(_maint_selectedBottle, level);
+          }
+          break;
         default: break;
       }
       _maint_state = MaintenanceState.SELECTING_BOTTLE;

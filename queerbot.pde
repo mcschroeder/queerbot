@@ -97,15 +97,42 @@ void gotoError(String msg) {
   redraw();
 }
 
+int _error_animationInterval = 100;  // in milliseconds
+private int _error_prevMillis;
+private int _error_rainbow_index = 0;
+
 void drawErrorInterface() {
   background(0,0,255);
-  textAlign(CENTER, BOTTOM);
+  
+  int currentMillis = millis();
+  if (currentMillis - _error_prevMillis >= _error_animationInterval) {
+    _error_prevMillis = currentMillis;
+    _error_rainbow_index = (_error_rainbow_index + 100);
+  }
+  
+  for (int x = 0; x < SCREEN_HEIGHT; x++) {
+    color c = gradient((x+_error_rainbow_index)%SCREEN_HEIGHT, 0, SCREEN_HEIGHT, RAINBOW_COLORS) + _error_rainbow_index;
+    stroke(c);
+    noFill();
+    line(0, x, SCREEN_WIDTH, x);
+  }
+  
+  textAlign(CENTER, CENTER);
   int size = 50;
   textSize(size);
   while (textWidth(_errorMsg) > SCREEN_WIDTH-50) {
     textSize(size--);
   }
-  text(_errorMsg, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);  
+    
+  noStroke();
+  fill(0);
+  rectMode(CENTER);
+  rect(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, textWidth(_errorMsg)+20, textAscent()+textDescent()+20);
+  rectMode(CORNER);
+  fill(255);
+  text(_errorMsg, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-3);
+  
+  loop();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,6 +195,7 @@ void sendCommand(String cmd) {
     hwLogWriter.println(cmd);
     hwLogWriter.flush();
   }
+  if (DEBUG_SIMULATE_MIXING) return;
   port.write(cmd);
 }
 
