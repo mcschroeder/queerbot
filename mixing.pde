@@ -4,7 +4,7 @@ boolean mixingInProgress = false;
 
 void drawMixingInterface() {
   assert state == QueerbotState.MIXING;
-  assert activeDrink != null;
+  //assert activeDrink != null;
   
   if (activeDrink == null) return;
   

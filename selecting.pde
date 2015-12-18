@@ -26,8 +26,9 @@ void drawLegend(Selection selection) {
   int y = margin;
   for (int i = 0; i < model.ingredients.length; i++) {
     Ingredient ingredient = model.ingredients[i];    
-    float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;    
-    float alpha = 255 * selection.amounts[i];        
+    float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;
+    float a = selection.amounts[i];
+    float alpha = a < 0.05 ? 0 : min(255, 40 + (255 * selection.amounts[i]));        
     noStroke();
     fill(ingredient.strokeColor, alpha);
     rect(x, y, w, h, 5, 5, 5, 5);    
