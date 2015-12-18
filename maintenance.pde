@@ -106,10 +106,10 @@ void drawMenu(String[] items, int selectedIndex, int y) {
 void _maint_moveCursor(float x) {
   switch (_maint_state) {
     case SELECTING_BOTTLE:
-      _maint_selectedBottle = (int)map(x, 0, 1, 0, model.ingredients.length);
+      _maint_selectedBottle = (int)map(x, 0, 1, 0, model.ingredients.length-1);
       break;
     case SELECTING_ACTION:
-      _maint_selectedAction = (int)map(x, 0, 1, 0, 2);
+      _maint_selectedAction = (int)map(x, 0, 1, 0, 1);
   }  
   redraw();
 }
