@@ -9,7 +9,7 @@ class Ingredient {
   final float[] yValues;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
   color strokeColor = 255;
   int strokeWeight = 5;
-  int fillLevel = 0;  // in milliliters
+  int fillLevel;  // in milliliters
   
   Ingredient(int index, String name, int numSections) {
     this.index = index;
@@ -19,6 +19,7 @@ class Ingredient {
       controlPoints[i] = new PVector();
     }
     this.yValues = new float[SCREEN_WIDTH];
+    this.fillLevel = DEBUG_SIMULATE_MIXING ? MAX_FILL_LEVEL : 0;
   }
   
   void setSignificantPoints(Section[] sections) {
