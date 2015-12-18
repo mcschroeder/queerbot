@@ -1,4 +1,5 @@
 final Queue<PVector> ingredientsToMix = new LinkedList<PVector>();
+int currentMixAmount, currentMixIndex;
 boolean mixingInProgress = false;
 
 void drawMixingInterface() {
@@ -55,13 +56,13 @@ void mixNextIngredient() {
     finishMixing();
   } else {
     PVector p = ingredientsToMix.poll();
-    int index = (int)p.x;
-    int amount = (int)p.y;    
-    cursor1.fillToLevel = cursor1.fillLevel + norm(amount, 0, CUP_SIZE);    
+    currentMixIndex = (int)p.x;
+    currentMixAmount = (int)p.y;
+    cursor1.fillToLevel = cursor1.fillLevel + norm(currentMixAmount, 0, CUP_SIZE);    
     if (DEBUG_SIMULATE_MIXING) {
       mixingInProgress = true;
     } else {
-      openValve(index, amount);
+      openValve(currentMixIndex, currentMixAmount);
     }
   }
 }

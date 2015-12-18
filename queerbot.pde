@@ -265,7 +265,8 @@ void keyPressed() {
     case 'c':
       if (DEBUG_SIMULATE_MIXING && 
           state == QueerbotState.MIXING && mixingInProgress) {
-        mixNextIngredient();
+        int level = model.ingredients[currentMixIndex].fillLevel - currentMixAmount; 
+        didReceiveFillLevel(currentMixIndex, level);
       } else {
         confirmButtonPressed();
       }
