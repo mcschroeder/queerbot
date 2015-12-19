@@ -80,7 +80,6 @@ Selection getSelection(int x, Model model) {
       for (int i = 0; i < model.ingredients.length; i++) {
         amounts[i] = model.ingredients[i].getAmount(x);
       }
-      printArray(amounts);
       return new Selection(section, amounts, x);
     }
   }

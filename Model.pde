@@ -17,7 +17,7 @@ class Model {
     Table table = loadTable(ingredientsFile, "header");
     table.trim();
             
-    sections = new Section[table.getColumnCount()-2];
+    sections = new Section[table.getColumnCount()-3];
     sectionsByName = new HashMap();
     ingredients = new Ingredient[table.getRowCount()];    
     for (int i = 0; i < sections.length; i++) {
@@ -29,6 +29,7 @@ class Model {
         if (ingredients[j] == null) { 
           ingredients[j] = new Ingredient(j, row.getString("name"), sections.length);
           ingredients[j].strokeColor = color(unhex(row.getString("color")) | 0xFF000000);
+          ingredients[j].scaleFactor = row.getFloat("scale");
         }
       }
     }

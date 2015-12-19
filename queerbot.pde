@@ -48,6 +48,7 @@ void setup() {
     try {
       port = new Serial(this, "/dev/ttyUSB0", 9600);
       port.bufferUntil(10);
+      getStatus();
     } catch (Exception e) {
       gotoError(e.getLocalizedMessage());      
       return;

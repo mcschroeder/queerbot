@@ -7,6 +7,7 @@ class Ingredient {
   // variables
   final PVector[] controlPoints;  // spline control points, absolute pixel scale
   final float[] yValues;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
+  float scaleFactor = 1;
 
   // absolute ml amounts, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
   final PVector[] amountControlPoints;
@@ -39,7 +40,7 @@ class Ingredient {
     for (Section section : sections) {
       PVector p = controlPoints[section.index+1];
       float amount = section.significantAmounts[this.index];      
-      p.y = map(amount, CUP_SIZE, 0, CANVAS_TOP, CANVAS_BOTTOM);
+      p.y = map(amount*scaleFactor, CUP_SIZE, 0, CANVAS_TOP, CANVAS_BOTTOM);
       if (section.index == 0) {
         p.x = section.leftX;
       } else if (section.index == sections.length-1) {

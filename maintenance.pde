@@ -123,7 +123,7 @@ void _maint_select() {
       break;
     case SELECTING_ACTION:    
       _maint_selectedAction = (_maint_selectedAction+1);
-      if (_maint_selectedAction == 3) {
+      if (_maint_selectedAction == _maint_actions.length) {
         _maint_state = MaintenanceState.SELECTING_BOTTLE;
       }
       break;
@@ -164,5 +164,6 @@ void gotoMaintenanceMode() {
   state = QueerbotState.MAINTENANCE;
   _maint_state = MaintenanceState.SELECTING_BOTTLE;
   analogValueChanged(analogValue);
+  getStatus();
   redraw();
 }
