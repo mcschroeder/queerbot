@@ -14,7 +14,7 @@ class Section {
   final String sectionStateFile;
 
   // variables
-  final float[] significantAmounts;  // one percentage amount per ingredient
+  final float[] significantAmounts;  // one ml amount per ingredient
   int count = 0;  // how often was this section selected
   private boolean _covered = true;
   boolean selected = false;

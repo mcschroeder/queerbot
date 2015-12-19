@@ -127,7 +127,7 @@ class Model {
 
 class Selection {
   final Section section;
-  final float[] amounts;  // one amount per ingredient
+  final float[] amounts;  // one ml amount per ingredient
   
   // to move the cursor to the right location:
   final int x;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1

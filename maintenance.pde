@@ -6,6 +6,7 @@ enum MaintenanceState {
 MaintenanceState _maint_state;
 int _maint_selectedBottle;
 int _maint_selectedAction;
+String[] _maint_actions = {"Mark Refilled", "Gimme Some!"};
 
 void drawMaintenanceInterface() {
   assert state == QueerbotState.MAINTENANCE;  
@@ -65,8 +66,7 @@ void drawMaintenanceInterface() {
       ellipse(x + w/2, y+h+100, 30, 30);
 
       if (_maint_state == MaintenanceState.SELECTING_ACTION) {
-        String[] actions = {"Mark Refilled", "Gimme Some!", "Cup Size = "+CUP_SIZE};
-        drawMenu(actions, _maint_selectedAction, x + w/2, y+h+3+200+20);
+        drawMenu(_maint_actions, _maint_selectedAction, x + w/2, y+h+3+200+20);
       }
     }    
     
@@ -151,11 +151,6 @@ void _maint_confirm() {
             didReceiveFillLevel(_maint_selectedBottle, level);
           }
           _maint_state = MaintenanceState.SELECTING_BOTTLE;
-          break;
-        case 2:
-          CUP_SIZE += CUP_SIZE_INCREMENT;
-          if (CUP_SIZE > CUP_SIZE_MAX) CUP_SIZE = CUP_SIZE_MIN;
-          _maint_state = MaintenanceState.SELECTING_ACTION;
           break;
         default: break;
       }

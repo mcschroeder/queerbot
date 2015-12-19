@@ -7,6 +7,11 @@ class Ingredient {
   // variables
   final PVector[] controlPoints;  // spline control points, absolute pixel scale
   final float[] yValues;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
+
+  // absolute ml amounts, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
+  final PVector[] amountControlPoints;
+  final float[] interpolatedAmounts;
+
   color strokeColor = 255;
   int strokeWeight = 5;
   int fillLevel;  // in milliliters
@@ -15,18 +20,26 @@ class Ingredient {
     this.index = index;
     this.name = name;
     this.controlPoints = new PVector[numSections+2];
+    this.amountControlPoints = new PVector[numSections+2];
     for (int i = 0; i < controlPoints.length; i++) {
       controlPoints[i] = new PVector();
+      amountControlPoints[i] = new PVector();
     }
     this.yValues = new float[SCREEN_WIDTH];
+    this.interpolatedAmounts = new float[SCREEN_WIDTH];
     this.fillLevel = DEBUG_SIMULATE_MIXING ? MAX_FILL_LEVEL : 0;
   }
   
   void setSignificantPoints(Section[] sections) {
+    interpolatePixels(sections);
+    interpolateAmounts(sections);
+  }
+
+  void interpolatePixels(Section[] sections) {
     for (Section section : sections) {
       PVector p = controlPoints[section.index+1];
-      float amount = section.significantAmounts[this.index];
-      p.y = map(amount, 1, 0, CANVAS_TOP, CANVAS_BOTTOM);
+      float amount = section.significantAmounts[this.index];      
+      p.y = map(amount, CUP_SIZE, 0, CANVAS_TOP, CANVAS_BOTTOM);
       if (section.index == 0) {
         p.x = section.leftX;
       } else if (section.index == sections.length-1) {
@@ -36,8 +49,9 @@ class Ingredient {
       }
     }
     controlPoints[0] = controlPoints[1];
-    controlPoints[controlPoints.length-1] = controlPoints[controlPoints.length-2];    
-    
+    controlPoints[controlPoints.length-1] = controlPoints[controlPoints.length-2];
+
+    // interpolate amounts
     PVector[] points = spline(controlPoints, SCREEN_WIDTH/sections.length);
     HashMap<Integer,Float> pointMap = new HashMap();
     for (PVector point : points) {
@@ -50,18 +64,49 @@ class Ingredient {
       } else {
         this.yValues[i] = y.floatValue();
       }
-    }    
+    }
   }
-    
+
+  void interpolateAmounts(Section[] sections) {
+    for (Section section : sections) {
+      PVector p = amountControlPoints[section.index+1];
+      float amount = section.significantAmounts[this.index];      
+      p.y = amount;
+      if (section.index == 0) {
+        p.x = section.leftX;
+      } else if (section.index == sections.length-1) {
+        p.x = section.rightX;
+      } else {
+        p.x = section.centerX;
+      }
+    }
+    amountControlPoints[0] = amountControlPoints[1];
+    amountControlPoints[amountControlPoints.length-1] = amountControlPoints[amountControlPoints.length-2];    
+
+    PVector[] points = spline(amountControlPoints, SCREEN_WIDTH/sections.length);
+    HashMap<Integer,Float> pointMap = new HashMap();
+    for (PVector point : points) {
+      pointMap.put(new Integer((int)point.x), new Float(point.y));
+    }
+    for (int i = 0; i < SCREEN_WIDTH; i++) {
+      Float y = pointMap.get(new Integer(i));
+      if (y == null) {
+        this.interpolatedAmounts[i] = i == 0 ? 0 : this.interpolatedAmounts[i-1];
+      } else {
+        this.interpolatedAmounts[i] = y.floatValue();
+      }
+    }
+  }
+
   // x = absolute pixel scale
-  // return = percentage amount
+  // return = ml amount
   float getAmount(int x) {
-    x = (int)map(x, 0, SCREEN_WIDTH, 0, yValues.length);    
-    x = constrain(x, 0, yValues.length-1);
-    float y = this.yValues[x];
-    y = map(y, CANVAS_TOP, CANVAS_BOTTOM, 1, 0);
-    y = constrain(y, 0, 1);
-    return y;
+    x = (int)map(x, 0, SCREEN_WIDTH, 0, interpolatedAmounts.length);
+    x = constrain(x, 0, interpolatedAmounts.length-1);
+    float a = this.interpolatedAmounts[x];
+    if (a < MIN_AMOUNT) a = 0;
+    if (a > CUP_SIZE) a = CUP_SIZE;
+    return a;
   }
   
   void drawCurve() {

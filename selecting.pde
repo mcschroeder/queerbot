@@ -28,6 +28,7 @@ void drawLegend(Selection selection) {
     Ingredient ingredient = model.ingredients[i];    
     float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;
     float a = selection.amounts[i];
+    // TODO: these are now absolute amounts!
     float alpha = a < 0.05 ? 0 : min(255, 40 + (255 * selection.amounts[i]));        
     noStroke();
     fill(ingredient.strokeColor, alpha);
@@ -143,7 +144,7 @@ void updateHighlightedSections() {
 void checkFillLevels() {
   List<Ingredient> empties = new ArrayList();
   for (Ingredient ingredient : model.ingredients) {
-    if (ingredient.fillLevel < CUP_SIZE) {
+    if (ingredient.fillLevel < MIN_FILL_LEVEL) {
       empties.add(ingredient);
     }
   }

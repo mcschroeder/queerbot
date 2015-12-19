@@ -1,5 +1,5 @@
 final Queue<PVector> ingredientsToMix = new LinkedList<PVector>();
-int currentMixAmount, currentMixIndex;
+int totalMixAmount, currentMixAmount, currentMixIndex;
 boolean mixingInProgress = false;
 Cursor mixingCursor = null;
 Selection mixingDrink = null;
@@ -23,13 +23,22 @@ void gotoMixing(Selection drink) {
   loop();
   
   ingredientsToMix.clear();
+  totalMixAmount = 0;
+  for (int i = 0; i < mixingDrink.amounts.length; i++) {
+    float amount = mixingDrink.amounts[i];
+    if (amount > 0) {
+      ingredientsToMix.add(new PVector(i, amount));
+      totalMixAmount += amount;
+    }
+  }
+  /*
   int[] absoluteAmounts = round(map(mixingDrink.amounts, CUP_SIZE));
   for (int i = 0; i < absoluteAmounts.length; i++) {
     int amount = absoluteAmounts[i];
     if (amount > 0) {
       ingredientsToMix.add(new PVector(i, amount));
     }
-  }
+  }*/
   mixNextIngredient();
 }
 
@@ -85,7 +94,7 @@ void mixNextIngredient() {
     PVector p = ingredientsToMix.poll();
     currentMixIndex = (int)p.x;
     currentMixAmount = (int)p.y;
-    mixingCursor.fillToLevel = mixingCursor.fillLevel + norm(currentMixAmount, 0, CUP_SIZE);    
+    mixingCursor.fillToLevel = mixingCursor.fillLevel + norm(currentMixAmount, 0, totalMixAmount); 
     if (DEBUG_SIMULATE_MIXING) {
       mixingInProgress = true;
     } else {
