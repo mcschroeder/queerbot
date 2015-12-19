@@ -13,7 +13,7 @@ void drawSelectingInterface() {
     section.drawLabel();
   }  
   cursor1.drawForeground();
-  cursor2.drawForeground();
+  cursor2.drawForeground();  
   noLoop();
 }
 

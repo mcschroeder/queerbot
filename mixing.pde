@@ -1,45 +1,29 @@
 final Queue<PVector> ingredientsToMix = new LinkedList<PVector>();
 int currentMixAmount, currentMixIndex;
 boolean mixingInProgress = false;
-
-void drawMixingInterface() {
-  assert state == QueerbotState.MIXING;
-  //assert activeDrink != null;
-  
-  if (activeDrink == null) return;
-  
-  background(BACKGROUND_COLOR);  
-  drawLegend(getSelection(activeDrink.x, model));
-  model.history.drawMark(activeDrink.mark);
-  activeDrink.section.drawLabel();
-  cursor1.drawBackground();
-  cursor1.clipArea();
-  for (Ingredient ingredient : model.ingredients) {
-    ingredient.drawCurve();
-  }
-  noClip();
-  cursor1.drawForeground();
-}
+Cursor mixingCursor = null;
+Selection mixingDrink = null;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void gotoMixing(Selection drink) {
   assert state == QueerbotState.SELECTING;
   assert drink != null;
-  activeDrink = drink;
+  mixingDrink = drink;
   state = QueerbotState.MIXING;
-  cursor1.update(drink.x, false);
-  cursor1.fillLevel = 0;
-  cursor1.fillToLevel = 0;
+  mixingCursor = new Cursor(model);
+  mixingCursor.update(drink.x, false);
+  mixingCursor.fillLevel = 0;
+  mixingCursor.fillToLevel = 0;
   for (Section section : model.sections) {
     section.selected = false;
     section.highlighted = false;
   }
-  activeDrink.section.selected = true;
+  mixingDrink.section.selected = true;
   loop();
   
   ingredientsToMix.clear();
-  int[] absoluteAmounts = round(map(activeDrink.amounts, CUP_SIZE));
+  int[] absoluteAmounts = round(map(mixingDrink.amounts, CUP_SIZE));
   for (int i = 0; i < absoluteAmounts.length; i++) {
     int amount = absoluteAmounts[i];
     if (amount > 0) {
@@ -49,16 +33,59 @@ void gotoMixing(Selection drink) {
   mixNextIngredient();
 }
 
+void drawMixingInterface() {
+  assert state == QueerbotState.MIXING;
+  assert mixingDrink != null;
+  assert mixingCursor != null;
+  
+  background(0);
+  rainbowBackground();
+  
+  //drawLegend(getSelection(mixingDrink.x, model));
+  model.history.drawMark(mixingDrink.mark);
+  mixingDrink.section.drawLabel();
+  mixingCursor.drawBackground();
+  mixingCursor.clipArea();
+  for (Ingredient ingredient : model.ingredients) {
+    ingredient.drawCurve();
+  }
+  noClip();
+  mixingCursor.drawForeground();
+
+  Ingredient ingredient = model.ingredients[currentMixIndex];
+
+  textAlign(LEFT,TOP);
+  textSize(INGREDIENT_TEXT_SIZE);
+  float h = textAscent()+textDescent()+5;
+  float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;
+
+  float x = mixingCursor.drawingX+(CURSOR_WIDTH/2)+20;
+  if (x+w >= SCREEN_WIDTH-20) {
+    x = mixingCursor.drawingX-(CURSOR_WIDTH/2)-w-20;
+  }
+  float y = map(mixingCursor.fillToLevel, 0, 1, CANVAS_BOTTOM-3, CANVAS_TOP+3);
+  if (y+h >= CANVAS_BOTTOM-3) {
+    y = CANVAS_BOTTOM-3-h;
+  }
+
+  noStroke();
+  fill(0);
+  rect(x, y, w, h, 5, 5, 5, 5);  
+  noStroke();
+  fill(255);
+  text(ingredient.name, x + INGREDIENT_TEXT_PADDING/2, y + 2);
+}
+
 void mixNextIngredient() {
   assert state == QueerbotState.MIXING;
-  cursor1.fillLevel = cursor1.fillToLevel;
+  mixingCursor.fillLevel = mixingCursor.fillToLevel;
   if (ingredientsToMix.isEmpty()) {
     finishMixing();
   } else {
     PVector p = ingredientsToMix.poll();
     currentMixIndex = (int)p.x;
     currentMixAmount = (int)p.y;
-    cursor1.fillToLevel = cursor1.fillLevel + norm(currentMixAmount, 0, CUP_SIZE);    
+    mixingCursor.fillToLevel = mixingCursor.fillLevel + norm(currentMixAmount, 0, CUP_SIZE);    
     if (DEBUG_SIMULATE_MIXING) {
       mixingInProgress = true;
     } else {
@@ -69,7 +96,8 @@ void mixNextIngredient() {
 
 void finishMixing() {
   noLoop();
-  activeDrink = null;
+  mixingDrink = null;
+  mixingCursor = null;
   mixingInProgress = false;
   gotoSelecting();
 }

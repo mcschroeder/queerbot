@@ -9,4 +9,4 @@ echo
 echo "Starting..."
 export QUEERBOT_REVISION=$GIT_HASH
 export DISPLAY=:0
-$PROCESSING_DIR/processing-java --sketch=$QUEERBOT_DIR --run
+$PROCESSING_DIR/processing-java --sketch=$QUEERBOT_DIR --run > out.log

@@ -83,13 +83,3 @@ class Section {
     text(name, centerX, SECTION_LABELS_TOP);  
   }
 }
-
-color gradient(float x, float minX, float maxX, color[] colors) {  
-  float size = maxX - minX;
-  float bucketSize = size/(colors.length-1);
-  int i = (int)(x/bucketSize);
-  color c1 = colors[i];
-  color c2 = colors[min(i+1, colors.length-1)];
-  float amt = (float) (x % bucketSize) / bucketSize;
-  return lerpColor(c1, c2, amt);
-}

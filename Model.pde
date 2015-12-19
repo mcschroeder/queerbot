@@ -81,7 +81,9 @@ class Model {
     
     CoverRule coverRule = firstMatchingCoverRule(history.sectionsForSelections(), coverRules);
     if (coverRule != null) {
-      println("FOUND MATCHING COVER RULE: " + coverRule);
+      if (DEBUG_LOG_RULES) {
+        println("FOUND MATCHING COVER RULE: " + coverRule);
+      }
       coverRule.conclusion.setCovered(!coverRule.uncover);
     }    
     

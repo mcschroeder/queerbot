@@ -13,7 +13,6 @@ Model model;
 Cursor cursor1;
 Cursor cursor2;
 Cursor activeCursor;
-Selection activeDrink;
 Serial port;
 PrintWriter hwLogWriter;
 
@@ -103,25 +102,8 @@ void gotoError(String msg) {
   redraw();
 }
 
-int _error_animationInterval = 100;  // in milliseconds
-private int _error_prevMillis;
-private int _error_rainbow_index = 0;
-
 void drawErrorInterface() {
-  background(0,0,255);
-  
-  int currentMillis = millis();
-  if (currentMillis - _error_prevMillis >= _error_animationInterval) {
-    _error_prevMillis = currentMillis;
-    _error_rainbow_index = (_error_rainbow_index + 100);
-  }
-  
-  for (int x = 0; x < SCREEN_HEIGHT; x++) {
-    color c = gradient((x+_error_rainbow_index)%SCREEN_HEIGHT, 0, SCREEN_HEIGHT, RAINBOW_COLORS) + _error_rainbow_index;
-    stroke(c);
-    noFill();
-    line(0, x, SCREEN_WIDTH, x);
-  }
+  rainbowBackground();  
   
   textAlign(CENTER, CENTER);
   int size = 50;
@@ -139,6 +121,37 @@ void drawErrorInterface() {
   text(_errorMsg, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-3);
   
   loop();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int _error_animationInterval = 100;  // in milliseconds
+private int _error_prevMillis;
+private int _error_rainbow_index = 0;
+
+void rainbowBackground() {
+  int currentMillis = millis();
+  if (currentMillis - _error_prevMillis >= _error_animationInterval) {
+    _error_prevMillis = currentMillis;
+    _error_rainbow_index = (_error_rainbow_index + 100);
+  }
+  
+  for (int y = 0; y < SCREEN_HEIGHT; y++) {
+    color c = gradient((y+_error_rainbow_index)%SCREEN_HEIGHT, 0, SCREEN_HEIGHT, RAINBOW_COLORS) + _error_rainbow_index;
+    stroke(c);
+    noFill();
+    line(0, y, SCREEN_WIDTH, y);
+  }
+}
+
+color gradient(float x, float minX, float maxX, color[] colors) {  
+  float size = maxX - minX;
+  float bucketSize = size/(colors.length-1);
+  int i = (int)(x/bucketSize);
+  color c1 = colors[i];
+  color c2 = colors[min(i+1, colors.length-1)];
+  float amt = (float) (x % bucketSize) / bucketSize;
+  return lerpColor(c1, c2, amt);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -196,9 +209,13 @@ void setFillLevel(int index, int amount) {
   sendCommand("F " + index + " " + amount + "\n");
 }
 
+void getStatus() {
+  sendCommand("S");
+}
+
 void sendCommand(String cmd) {
   if (DEBUG_LOG_HARDWARE && hwLogWriter != null) {
-    hwLogWriter.println(cmd);
+    hwLogWriter.println(">"+cmd);
     hwLogWriter.flush();
   }
   if (DEBUG_SIMULATE_MIXING) return;
@@ -210,7 +227,6 @@ void sendCommand(String cmd) {
 void serialEvent(Serial port) {
   String line = port.readString();
   if (DEBUG_LOG_HARDWARE && hwLogWriter != null) {
-    hwLogWriter.print(">");
     hwLogWriter.print(line);
     hwLogWriter.flush();
   }
