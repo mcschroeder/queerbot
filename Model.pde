@@ -40,15 +40,6 @@ class Model {
     
     this.inputRules = loadInputRules(inputRulesFile, sectionsByName);
     this.coverRules = loadCoverRules(coverRulesFile, sectionsByName);
-
-    if (DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED) {
-      for (Section section : sections) {
-        section.covered = false;
-      }
-    } else {
-      sections[0].covered = false;
-      sections[sections.length-1].covered = false;
-    }
     
     updateRangesForUncoveredSections(CURSOR_WIDTH/2);    
   }
@@ -91,7 +82,7 @@ class Model {
     CoverRule coverRule = firstMatchingCoverRule(history.sectionsForSelections(), coverRules);
     if (coverRule != null) {
       println("FOUND MATCHING COVER RULE: " + coverRule);
-      coverRule.conclusion.covered = !coverRule.uncover;
+      coverRule.conclusion.setCovered(!coverRule.uncover);
     }    
     
     updateRangesForUncoveredSections(CURSOR_WIDTH/2);
@@ -105,7 +96,7 @@ class Model {
     Set<Range> ranges = new HashSet();
     Range currentRange = null;
     for (Section section : sections) {
-      if (section.covered) {
+      if (section.isCovered()) {
         if (currentRange != null) {
           currentRange.end -= padding;
           ranges.add(currentRange);

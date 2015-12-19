@@ -71,7 +71,6 @@ void gotoSelecting() {
   cursor1.fillLevel = cursor1.fillToLevel = 0;
   cursor2.fillLevel = cursor2.fillToLevel = 0;
   activeCursor = cursor1;
-  analogValueChanged(analogValue);
   updateSelectedSections();  
   loop();  
   checkFillLevels();

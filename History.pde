@@ -1,9 +1,13 @@
 import java.text.*;
+import java.io.*;
 
 class History {
   final Deque<Selection> selections;  // size = SELECTION_HISTORY_SIZE
   final ConcurrentLinkedQueue<PVector> marks;  // absolute pixels
   final PrintWriter logWriter;
+  
+  final String RAINBOW_STATE_FILE = "state/rainbow";
+  FileWriter rainbowStateWriter = null;
   
   History(Ingredient[] ingredients) {
     this.selections = new LinkedList();
@@ -19,6 +23,22 @@ class History {
     headerLine += ",rainbowX,rainbowY";
     logWriter.println(headerLine);
     logWriter.flush();
+    
+    String[] rainbowLines = loadStrings(RAINBOW_STATE_FILE);
+    if (rainbowLines != null) {
+      for (String line : rainbowLines) {
+        String[] tokens = line.split(",");
+        PVector p = new PVector();
+        p.x = float(tokens[0]);
+        p.y = float(tokens[1]);
+        marks.add(p);
+      }
+    }
+    try {
+      this.rainbowStateWriter = new FileWriter(sketchPath(RAINBOW_STATE_FILE), true);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   
   void add(Selection selection) {    
@@ -31,6 +51,13 @@ class History {
     PVector p = new PVector(selection.x, y);
     marks.add(p);
     selection.mark = p;
+    
+    if (rainbowStateWriter != null) {
+      try {
+        rainbowStateWriter.write(p.x + "," + p.y + "\n");
+        rainbowStateWriter.flush();
+      } catch (IOException e) {}
+    }
     
     String logLine = millis()+","+selection.section.name;
     for (float amount : selection.amounts) {

@@ -52,8 +52,8 @@ private List<CoverRule> loadCoverRules(String file, Map<String,Section> sections
 CoverRule firstMatchingCoverRule(Section[] sections, List<CoverRule> rules) {
   for (CoverRule rule : rules) {
     if (rule.matches(sections)) {
-      if ((rule.uncover && rule.conclusion.covered) ||
-          (!rule.uncover && !rule.conclusion.covered)) {
+      if ((rule.uncover && rule.conclusion.isCovered()) ||
+          (!rule.uncover && !rule.conclusion.isCovered())) {
         return rule;
       }
     }

@@ -59,10 +59,16 @@ void setup() {
 }
 
 void stop() {
+  // TODO: this is probably unnecessary
   hwLogWriter.flush();
   hwLogWriter.close();
   model.history.logWriter.flush();
   model.history.logWriter.close();
+  try {
+    model.history.rainbowStateWriter.flush();
+    model.history.rainbowStateWriter.close();
+  } catch (IOException e) {
+  }
 }
 
 void draw() {

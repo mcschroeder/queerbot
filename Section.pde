@@ -10,12 +10,15 @@ class Section {
   final int centerX;
   final int rightX;
 
+  final String SECTION_STATE_FILE_PREFIX = "state/section";
+  final String sectionStateFile;
+
   // variables
   final float[] significantAmounts;  // one percentage amount per ingredient
   int count = 0;  // how often was this section selected
-  boolean covered = true;
+  private boolean _covered = true;
   boolean selected = false;
-  boolean highlighted = false;
+  boolean highlighted = false;  
   
   Section(int index, String name, int numSections, int numIngredients) {
     this.index = index;
@@ -25,10 +28,33 @@ class Section {
     this.leftX = (int)map(index, 0, numSections-1, 0, SCREEN_WIDTH-sectionWidth);
     this.centerX = leftX + sectionWidth/2;
     this.rightX = leftX + sectionWidth;
+    
+    this.sectionStateFile = SECTION_STATE_FILE_PREFIX+index;
+    if (DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED) {
+      _covered = false;
+    } else {
+      String[] sectionState = loadStrings(sectionStateFile);
+      if (sectionState == null) {
+         _covered = (index == 0 || index == numSections-1);
+      } else {
+        if (sectionState.length >= 1) {
+          _covered = boolean(sectionState[0]);
+        }
+      }
+    }
+  }
+  
+  void setCovered(boolean covered) {
+    _covered = covered;
+    saveStrings(sectionStateFile, new String[] { str(_covered) });
+  }
+  
+  boolean isCovered() {
+    return _covered;
   }
   
   void drawForeground() {
-    if (covered) {
+    if (_covered) {
       noStroke();
       fill(BACKGROUND_COLOR);
       rect(leftX, CANVAS_TOP, sectionWidth, SCREEN_HEIGHT-CANVAS_TOP);
@@ -36,7 +62,7 @@ class Section {
   }
     
   void drawLabel() {       
-    if (covered) {
+    if (_covered) {
       return;
     }
     
