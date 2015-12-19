@@ -157,6 +157,5 @@ Selection hybridSelection(Selection selection1, Selection selection2, Model mode
   } else {
     resultX = selection1.x + (selection2.x - selection1.x)/2;
   }
-  println("s1="+selection1.x+" s2="+selection2.x+" r="+resultX);
   return getSelection(resultX, model);
 }

@@ -57,7 +57,7 @@ class Section {
     if (_covered) {
       noStroke();
       fill(BACKGROUND_COLOR);
-      rect(leftX, CANVAS_TOP, sectionWidth, SCREEN_HEIGHT-CANVAS_TOP);
+      rect(leftX, CANVAS_TOP, sectionWidth, CANVAS_HEIGHT);
     }
   }
     
