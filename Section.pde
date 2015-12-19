@@ -35,7 +35,7 @@ class Section {
     } else {
       String[] sectionState = loadStrings(sectionStateFile);
       if (sectionState == null) {
-         _covered = (index == 0 || index == numSections-1);
+         _covered = !(index == 0 || index == numSections-1);
       } else {
         if (sectionState.length >= 1) {
           _covered = boolean(sectionState[0]);
