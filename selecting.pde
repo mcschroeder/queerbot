@@ -108,7 +108,10 @@ void confirm() {
   assert state == QueerbotState.SELECTING;
   activeCursor = null;
   Selection selection1 = getSelection(cursor1.x, model);
-  Selection selection2 = cursor2.hidden ? null : getSelection(cursor2.x, model);  
+  Selection selection2 = null;
+  if (!cursor2.hidden && abs(cursor2.x-cursor1.x) > CURSOR_WIDTH) {
+    selection2 = getSelection(cursor2.x, model);
+  }  
   Selection result = model.update(selection1, selection2);
   for (Section section : model.sections) {
     section.selected = false;

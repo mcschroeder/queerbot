@@ -47,6 +47,8 @@ void drawMixingInterface() {
   assert mixingDrink != null;
   assert mixingCursor != null;
   
+  if (mixingDrink == null || mixingCursor == null) return;
+
   background(0);
   rainbowBackground();
   
@@ -105,8 +107,8 @@ void mixNextIngredient() {
 
 void finishMixing() {
   noLoop();
-  mixingDrink = null;
-  mixingCursor = null;
+  //mixingDrink = null;
+  //mixingCursor = null;
   mixingInProgress = false;
   gotoSelecting();
 }

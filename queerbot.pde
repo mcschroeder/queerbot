@@ -25,6 +25,7 @@ void settings() {
     fullScreen();
     DEBUG_SIMULATE_HARDWARE = false;
     DEBUG_SIMULATE_MIXING = false;
+    DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = false;
   } else {
     size(SCREEN_WIDTH, SCREEN_HEIGHT);
   }

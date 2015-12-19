@@ -73,7 +73,11 @@ class Model {
         if (inputRule.out == null) {
           result = hybridSelection(selection1, selection2, this);
         } else {
-          result = new Selection(inputRule.out, inputRule.out.significantAmounts, inputRule.out.centerX);
+          if (inputRule.in1 == inputRule.in2 && inputRule.out == inputRule.in1) {
+            result = hybridSelection(selection1, selection2, this);
+          } else {
+            result = new Selection(inputRule.out, inputRule.out.significantAmounts, inputRule.out.centerX);
+          }
         }
       }
     }
