@@ -110,15 +110,12 @@ class Model {
     return result;
   }
 
-  float PF = 0.1;  // plasticity factor
-  float SPF = 0.01;  // sub plasticity
-
   void updateTraits(Section dom) {
     float[] newSigAms = new float[dom.significantAmounts.length];
     for (int i = 0; i < dom.significantAmounts.length; i++) {
       float sigAmount = dom.significantAmounts[i];
       float histAvg = dom.historicalAverage[i];
-      float sigAmount_next = sigAmount + (histAvg-sigAmount)*PF;
+      float sigAmount_next = sigAmount + (histAvg-sigAmount)*PLASTICITY_FACTOR;
       //println("a="+sigAmount+" h="+histAvg+" a'="+sigAmount_next);
       newSigAms[i] = sigAmount_next;
     }
@@ -130,7 +127,7 @@ class Model {
       for (int i = 0; i < sub.significantAmounts.length; i++) {
         float subSigAmount = sub.significantAmounts[i];
         float domSigAmount = dom.significantAmounts[i];
-        float subSigAmount_next = subSigAmount + (domSigAmount-subSigAmount)*SPF*r;
+        float subSigAmount_next = subSigAmount + (domSigAmount-subSigAmount)*SUB_PLASTICITY_FACTOR*r;
         newSigAms[i] = subSigAmount_next;
         //println("sub_a="+subSigAmount+" dom_a="+domSigAmount+" sub_a'="+subSigAmount_next);
       }

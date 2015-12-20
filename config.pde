@@ -23,6 +23,8 @@ final int MAINTENANCE_BUTTON_ID = 3;
 
 final int SELECTION_HISTORY_SIZE = 10;
 final boolean TRAIT_UPDATES_ENABLED = true;
+final float PLASTICITY_FACTOR = 0.15;
+final float SUB_PLASTICITY_FACTOR = 0.05;
 
 final boolean LIGHTS_ENABLED = false;
 final int NUM_LIGHTS = 100;
