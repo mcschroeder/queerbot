@@ -39,11 +39,10 @@ void drawLegend(Selection selection) {
   int x = margin;
   int y = margin;
   for (int i = 0; i < model.ingredients.length; i++) {
-    Ingredient ingredient = model.ingredients[i];    
+    Ingredient ingredient = model.ingredients[i];  
     float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;
     float a = selection.amounts[i];
-    // TODO: these are now absolute amounts!
-    float alpha = a < 0.05 ? 0 : min(255, 40 + (255 * selection.amounts[i]));        
+    float alpha = VIRGIN_MODE && ingredient.alcoholic ? 0 : 255;
     noStroke();
     fill(ingredient.strokeColor, alpha);
     rect(x, y, w, h, 5, 5, 5, 5);    
@@ -71,6 +70,7 @@ void drawCurves() {
   imageMode(CORNER);
   clip(0, CANVAS_TOP+3, SCREEN_WIDTH, CANVAS_HEIGHT-6);
   for (Ingredient ingredient : model.ingredients) {
+    if (VIRGIN_MODE && ingredient.alcoholic) continue;
     ingredient.drawCurve();
   }
   noClip();

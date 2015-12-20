@@ -25,6 +25,7 @@ void gotoMixing(Selection drink) {
   ingredientsToMix.clear();
   totalMixAmount = 0;
   for (int i = 0; i < mixingDrink.amounts.length; i++) {
+    if (VIRGIN_MODE && model.ingredients[i].alcoholic) continue;
     float amount = mixingDrink.amounts[i];
     if (amount > 0) {
       ingredientsToMix.add(new PVector(i, amount));

@@ -17,7 +17,7 @@ class Model {
     Table table = loadTable(ingredientsFile, "header");
     table.trim();
             
-    sections = new Section[table.getColumnCount()-3];
+    sections = new Section[table.getColumnCount()-4];
     sectionsByName = new HashMap();
     ingredients = new Ingredient[table.getRowCount()];    
     for (int i = 0; i < sections.length; i++) {
@@ -29,8 +29,9 @@ class Model {
           sections[i].significantAmounts[j] = row.getFloat(i);
           sections[i].historicalAverage[j] = sections[i].significantAmounts[j];
         }
-        if (ingredients[j] == null) { 
-          ingredients[j] = new Ingredient(j, row.getString("name"), sections.length);
+        if (ingredients[j] == null) {
+          boolean alcoholic = (row.getInt("alcoholic") == 1);
+          ingredients[j] = new Ingredient(j, row.getString("name"), sections.length, alcoholic);
           ingredients[j].strokeColor = color(unhex(row.getString("color")) | 0xFF000000);
           ingredients[j].scaleFactor = row.getFloat("scale");
         }
@@ -105,7 +106,7 @@ class Model {
     for (Ingredient ingredient : ingredients) {
       ingredient.setSignificantPoints(sections);
     }
-    
+
     return result;
   }
 

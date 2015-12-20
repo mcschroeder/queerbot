@@ -3,9 +3,11 @@ final boolean OUT_OF_ORDER = false;
 final boolean DEBUG_SHOW_FPS = false;
 final boolean DEBUG_LOG_RULES = false;
 boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
-boolean DEBUG_SIMULATE_HARDWARE = false;
+boolean DEBUG_SIMULATE_HARDWARE = true;
 boolean DEBUG_SIMULATE_MIXING = true;
 final boolean DEBUG_LOG_HARDWARE = true;
+
+boolean VIRGIN_MODE = false;
 
 final int MIN_FILL_LEVEL = 100;  // ml
 final int MAX_FILL_LEVEL = 1400;  // ml
@@ -22,6 +24,7 @@ final int MAINTENANCE_BUTTON_ID = 3;
 final int SELECTION_HISTORY_SIZE = 10;
 final boolean TRAIT_UPDATES_ENABLED = true;
 
+final boolean LIGHTS_ENABLED = false;
 final int NUM_LIGHTS = 100;
 
 final color BACKGROUND_COLOR = color(0);

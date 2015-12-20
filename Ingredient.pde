@@ -2,8 +2,9 @@ class Ingredient {
   
   // constants  
   final int index;
-  final String name;  
-    
+  final String name;
+  final boolean alcoholic;
+
   // variables
   final PVector[] controlPoints;  // spline control points, absolute pixel scale
   final float[] yValues;  // absolute pixel scale, indexed from 0=CANVAS_LEFT to CANVAS_WIDTH-1
@@ -20,9 +21,10 @@ class Ingredient {
   final String INGREDIENT_FILL_STATE_FILE_PREFIX = "state/fill";
   final String fillStateFile;
   
-  Ingredient(int index, String name, int numSections) {
+  Ingredient(int index, String name, int numSections, boolean alcoholic) {
     this.index = index;
     this.name = name;
+    this.alcoholic = alcoholic;
     this.controlPoints = new PVector[numSections+2];
     this.amountControlPoints = new PVector[numSections+2];
     for (int i = 0; i < controlPoints.length; i++) {

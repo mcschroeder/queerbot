@@ -34,9 +34,11 @@ void drawMaintenanceInterface() {
     Ingredient ingredient = model.ingredients[i];
     textSize(INGREDIENT_TEXT_SIZE);
     float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;        
-        
+    
+    float alpha = VIRGIN_MODE && ingredient.alcoholic ? 127 : 255;
+
     noStroke();    
-    fill(ingredient.strokeColor);
+    fill(ingredient.strokeColor, alpha);
     rect(x, y, w, h, 5, 5, 0, 0);    
         
     noStroke();
@@ -45,7 +47,7 @@ void drawMaintenanceInterface() {
     text(ingredient.name, x + INGREDIENT_TEXT_PADDING/2, y + 2);
 
     noStroke();
-    fill(ingredient.strokeColor);
+    fill(ingredient.strokeColor, alpha);
     rect(x, y+h+3, w, 200, 0, 0, 5, 5);
     float fillH = map(ingredient.getFillLevel(), 0, MAX_FILL_LEVEL, 200-6, 0);
     noStroke();
@@ -134,7 +136,9 @@ void _maint_select() {
 
 void _maint_confirm() {
   switch (_maint_state) {
-    case SELECTING_BOTTLE: break;
+    case SELECTING_BOTTLE:
+      VIRGIN_MODE = !VIRGIN_MODE;
+      break;
     case SELECTING_ACTION:
       switch (_maint_selectedAction) {
         case 0: 

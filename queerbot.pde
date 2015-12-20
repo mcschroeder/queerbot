@@ -227,6 +227,7 @@ void getStatus() {
 }
 
 void setLights(color c) {
+  if (LIGHTS_ENABLED == false) return;
   color cs[] = new color[NUM_LIGHTS];
   for (int i = 0; i < NUM_LIGHTS; i++) {
     cs[i] = c;
@@ -235,6 +236,7 @@ void setLights(color c) {
 }
 
 void setLights(color[] colors) {
+  if (LIGHTS_ENABLED == false) return;
   String cmd = "";
   for (int i = 0; i < colors.length; i++) {
     color c = colors[i];
