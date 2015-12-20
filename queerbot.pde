@@ -43,23 +43,22 @@ void setup() {
     hwLogWriter = createWriter("log/serial.log");
   }
   
-  if (!DEBUG_SIMULATE_HARDWARE) {
-    try {
-      port = new Serial(this, "/dev/ttyUSB0", 9600);
-      port.bufferUntil(10);
-      getStatus();
-    } catch (Exception e) {
-      gotoError(e.getLocalizedMessage());      
-      return;
-    }
-  }
-
   model = new Model("ingredients.csv", "input.rules", "cover.rules");
   cursor1 = new Cursor(model);
   cursor2 = new Cursor(model);
   cursor2.hidden = true;
   activeCursor = cursor1; 
   
+  if (!DEBUG_SIMULATE_HARDWARE) {
+    try {
+      port = new Serial(this, "/dev/ttyUSB0", 9600);
+      port.bufferUntil(10);
+    } catch (Exception e) {
+      gotoError(e.getLocalizedMessage());      
+      return;
+    }
+  }
+
   state = QueerbotState.SELECTING;
 }
 
@@ -142,12 +141,19 @@ void rainbowBackground() {
     _error_rainbow_index = (_error_rainbow_index + 100);
   }
   
+  color[] lightColors = new color[NUM_LIGHTS];
+  int lightNum = 0;
   for (int y = 0; y < SCREEN_HEIGHT; y++) {
     color c = gradient((y+_error_rainbow_index)%SCREEN_HEIGHT, 0, SCREEN_HEIGHT, RAINBOW_COLORS) + _error_rainbow_index;
     stroke(c);
     noFill();
     line(0, y, SCREEN_WIDTH, y);
+
+    if (y % (SCREEN_HEIGHT/lightColors.length) == 0) {
+      lightColors[lightNum++] = c;
+    }
   }
+  setLights(lightColors);
 }
 
 color gradient(float x, float minX, float maxX, color[] colors) {  
@@ -198,6 +204,7 @@ void maintenanceButtonPressed() {
 }
 
 void didReceiveFillLevel(int index, int amount) {
+  if (model == null || model.ingredients == null) return;
   if (index >= model.ingredients.length) return;
   model.ingredients[index].setFillLevel(amount);
   switch (state) {
@@ -219,12 +226,31 @@ void getStatus() {
   sendCommand("S");
 }
 
+void setLights(color c) {
+  color cs[] = new color[NUM_LIGHTS];
+  for (int i = 0; i < NUM_LIGHTS; i++) {
+    cs[i] = c;
+  }
+  setLights(cs);
+}
+
+void setLights(color[] colors) {
+  String cmd = "";
+  for (int i = 0; i < colors.length; i++) {
+    color c = colors[i];
+    cmd += "L " + i + " " + str(c) + "\n";
+  }
+  cmd += "L -1\n";
+  sendCommand(cmd);
+}
+
 void sendCommand(String cmd) {
   if (DEBUG_LOG_HARDWARE && hwLogWriter != null) {
     hwLogWriter.println(">"+cmd);
     hwLogWriter.flush();
-  }
-  if (DEBUG_SIMULATE_MIXING) return;
+  }  
+  if (port == null) return;
+  if (DEBUG_SIMULATE_HARDWARE) return;
   port.write(cmd);
 }
 

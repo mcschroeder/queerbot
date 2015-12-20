@@ -138,8 +138,10 @@ void updateHighlightedSections() {
   for (Section section : model.sections) {
     section.highlighted = false;
   }
-  if (activeCursor != null) {
+  if (activeCursor != null) {    
     getSelection(activeCursor.x, model).section.highlighted = true;
+    color c = gradient(activeCursor.x, 0, SCREEN_WIDTH, RAINBOW_COLORS);
+    setLights(c);
   }
 }
 
