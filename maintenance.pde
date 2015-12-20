@@ -161,7 +161,7 @@ void _maint_confirm() {
       break;
   }  
   analogValueChanged(analogValue);
-  redraw();
+  loop();
 }
 
 void gotoMaintenanceMode() {

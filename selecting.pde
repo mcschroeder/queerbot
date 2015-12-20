@@ -42,7 +42,8 @@ void drawLegend(Selection selection) {
     Ingredient ingredient = model.ingredients[i];  
     float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;
     float a = selection.amounts[i];
-    float alpha = VIRGIN_MODE && ingredient.alcoholic ? 0 : 255;
+    float alpha = a < MIN_AMOUNT ? 0 : 255;
+    alpha = VIRGIN_MODE && ingredient.alcoholic ? 0 : 255;
     noStroke();
     fill(ingredient.strokeColor, alpha);
     rect(x, y, w, h, 5, 5, 5, 5);    
