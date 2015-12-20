@@ -43,7 +43,7 @@ void drawLegend(Selection selection) {
     float w = textWidth(ingredient.name) + INGREDIENT_TEXT_PADDING;
     float a = selection.amounts[i];
     float alpha = a < MIN_AMOUNT ? 0 : 255;
-    alpha = VIRGIN_MODE && ingredient.alcoholic ? 0 : 255;
+    if (VIRGIN_MODE && ingredient.alcoholic) alpha = 0;
     noStroke();
     fill(ingredient.strokeColor, alpha);
     rect(x, y, w, h, 5, 5, 5, 5);    
