@@ -26,6 +26,9 @@ class Model {
       for (int j = 0; j < ingredients.length; j++) {
         TableRow row = table.getRow(j);
         sections[i].significantAmounts[j] = row.getFloat(i);
+        if (sections[i].getCount() == 0) {
+          sections[i].historicalAverage[j] = sections[i].significantAmounts[j];
+        }
         if (ingredients[j] == null) { 
           ingredients[j] = new Ingredient(j, row.getString("name"), sections.length);
           ingredients[j].strokeColor = color(unhex(row.getString("color")) | 0xFF000000);
@@ -52,7 +55,7 @@ class Model {
     assert (selection1 != null);
     Selection result;
     if (selection2 == null) {
-      selection1.section.count += 1;
+      selection1.section.incrementCount();
       result = selection1;
     } else {
       Section[] selectedSections = {selection1.section, selection2.section};
@@ -61,15 +64,15 @@ class Model {
         if (DEBUG_LOG_RULES) {
           println("NO INPUT RULE FOUND. TALLYING EACH AND RETURNING HYBRID.");
         }
-        selection1.section.count += 1;
-        selection2.section.count += 1;
+        selection1.section.incrementCount();
+        selection2.section.incrementCount();
         result = hybridSelection(selection1, selection2, this);
       } else {
         if (DEBUG_LOG_RULES) {
           println("USING INPUT RULE: " + inputRule);
         }
-        if (inputRule.tally1 != null) inputRule.tally1.count++;
-        if (inputRule.tally2 != null) inputRule.tally2.count++;
+        if (inputRule.tally1 != null) inputRule.tally1.incrementCount();
+        if (inputRule.tally2 != null) inputRule.tally2.incrementCount();
         if (inputRule.out == null) {
           result = hybridSelection(selection1, selection2, this);
         } else {
@@ -83,6 +86,7 @@ class Model {
     }
 
     history.add(result);
+    result.section.updateHistoricalAverage(result.amounts);
     
     CoverRule coverRule = firstMatchingCoverRule(history.sectionsForSelections(), coverRules);
     if (coverRule != null) {
@@ -94,9 +98,42 @@ class Model {
     
     updateRangesForUncoveredSections(CURSOR_WIDTH/2);
     
-    // TODO: update the traits based on ???
+    // TODO
+    // updateTraits();
     
     return result;
+  }
+
+  int t = 0;
+  float p = 0.1;
+  void updateTraits() {
+    t = t + 1;
+    // if (t % 60 != 0) return;
+    for (Section dom : model.sections) {
+      for (int i = 0; i < dom.significantAmounts.length; i++) {
+        float sigAmount = dom.significantAmounts[i];
+        float histAvg = dom.historicalAverage[i];
+        float sigAmount_next = sigAmount + (histAvg-sigAmount)*p;
+        println("a="+sigAmount+" h="+histAvg+" a'="+sigAmount_next);
+        dom.significantAmounts[i] = sigAmount_next;
+      }
+      /*
+      for (Section sub :  model.sections) {
+        if (dom == sub) continue;
+        float r = random(-1,1);
+        for (int i = 0; i < sub.significantAmounts.length; i++) {
+          float subSigAmount = sub.significantAmounts[i];
+          float domSigAmount = dom.significantAmounts[i];
+          float subSigAmount_next = subSigAmount + (domSigAmount-subSigAmount)*p*r;
+          sub.significantAmounts[i] = subSigAmount_next;
+          println("sub_a="+subSigAmount+" dom_a="+domSigAmount+" sub_a'="+subSigAmount_next);
+        }
+      }
+      */
+    }
+    for (Ingredient ingredient : model.ingredients) {
+      ingredient.setSignificantPoints(model.sections);
+    }
   }
   
   void updateRangesForUncoveredSections(int padding) {

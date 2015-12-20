@@ -15,7 +15,8 @@ class Section {
 
   // variables
   final float[] significantAmounts;  // one ml amount per ingredient
-  int count = 0;  // how often was this section selected
+  final float[] historicalAverage;  
+  private int _count = 0;  // how often was this section selected
   private boolean _covered = true;
   boolean selected = false;
   boolean highlighted = false;  
@@ -24,6 +25,7 @@ class Section {
     this.index = index;
     this.name = name;
     this.significantAmounts = new float[numIngredients];
+    this.historicalAverage = new float[numIngredients];
     this.sectionWidth = SCREEN_WIDTH/numSections;
     this.leftX = (int)map(index, 0, numSections-1, 0, SCREEN_WIDTH-sectionWidth);
     this.centerX = leftX + sectionWidth/2;
@@ -35,22 +37,60 @@ class Section {
     } else {
       String[] sectionState = loadStrings(sectionStateFile);
       if (sectionState == null) {
-         _covered = !(index == 0 || index == numSections-1);
+        _covered = !(index == 0 || index == numSections-1);
       } else {
         if (sectionState.length >= 1) {
           _covered = boolean(sectionState[0]);
         }
+        if (sectionState.length >= 2) {
+          _count = int(sectionState[1]);
+        }
+        if (sectionState.length >= 3) {
+          String[] has = sectionState[2].split(",");
+          if (has.length == historicalAverage.length) { 
+            for (int i = 0; i < has.length; i++) {
+              historicalAverage[i] = float(has[i]);
+            }
+          }
+        }
       }
     }
+  }
+
+  void saveState() {
+    String has = str(historicalAverage[0]);
+    for (int i = 1; i < historicalAverage.length; i++) {
+      has += ","+str(historicalAverage[i]);
+    }
+    String[] state = {str(_covered), str(_count), has};
+    saveStrings(sectionStateFile, state);
   }
   
   void setCovered(boolean covered) {
     _covered = covered;
-    saveStrings(sectionStateFile, new String[] { str(_covered) });
+    saveState();
   }
   
   boolean isCovered() {
     return _covered;
+  }
+
+  void incrementCount() {
+    _count = _count + 1;
+    saveState();
+  }
+
+  int getCount() {
+    return _count;
+  }
+
+  void updateHistoricalAverage(float[] selectedAmounts) {
+    for (int i = 0; i < historicalAverage.length; i++) {
+      print("hist="+historicalAverage[i]);
+      historicalAverage[i] = (selectedAmounts[i] + _count * historicalAverage[i])/(_count + 1);
+      println(" a="+selectedAmounts[i]+" hist'="+historicalAverage[i]);
+    }
+    saveState();
   }
   
   void drawForeground() {

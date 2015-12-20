@@ -146,7 +146,7 @@ void updateHighlightedSections() {
 void checkFillLevels() {
   List<Ingredient> empties = new ArrayList();
   for (Ingredient ingredient : model.ingredients) {
-    if (ingredient.fillLevel < MIN_FILL_LEVEL) {
+    if (ingredient.getFillLevel() < MIN_FILL_LEVEL) {
       empties.add(ingredient);
     }
   }

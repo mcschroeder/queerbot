@@ -34,6 +34,11 @@ void settings() {
 void setup() {
   noCursor();
   noLoop();
+
+  if (OUT_OF_ORDER) {
+    gotoError("OUT OF ORDER");
+    return;
+  }
     
   model = new Model("ingredients.csv", "input.rules", "cover.rules");
   cursor1 = new Cursor(model);
@@ -195,7 +200,7 @@ void maintenanceButtonPressed() {
 
 void didReceiveFillLevel(int index, int amount) {
   if (index >= model.ingredients.length) return;
-  model.ingredients[index].fillLevel = amount;
+  model.ingredients[index].setFillLevel(amount);
   switch (state) {
     case MIXING: mixNextIngredient(); break;
     case MAINTENANCE: redraw();
@@ -207,7 +212,7 @@ void openValve(int index, int amount) {
   sendCommand("V " + index + " " + amount + "\n");
 }
 
-void setFillLevel(int index, int amount) {
+void sendFillLevel(int index, int amount) {
   sendCommand("F " + index + " " + amount + "\n");
 }
 
@@ -289,7 +294,7 @@ void keyPressed() {
     case 'c':
       if (DEBUG_SIMULATE_MIXING && 
           state == QueerbotState.MIXING && mixingInProgress) {
-        int level = model.ingredients[currentMixIndex].fillLevel - currentMixAmount; 
+        int level = model.ingredients[currentMixIndex].getFillLevel() - currentMixAmount; 
         didReceiveFillLevel(currentMixIndex, level);
       } else {
         confirmButtonPressed();

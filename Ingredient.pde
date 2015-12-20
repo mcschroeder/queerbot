@@ -15,7 +15,10 @@ class Ingredient {
 
   color strokeColor = 255;
   int strokeWeight = 5;
-  int fillLevel;  // in milliliters
+
+  private int _fillLevel;  // in milliliters
+  final String INGREDIENT_FILL_STATE_FILE_PREFIX = "state/fill";
+  final String fillStateFile;
   
   Ingredient(int index, String name, int numSections) {
     this.index = index;
@@ -28,7 +31,17 @@ class Ingredient {
     }
     this.yValues = new float[SCREEN_WIDTH];
     this.interpolatedAmounts = new float[SCREEN_WIDTH];
-    this.fillLevel = DEBUG_SIMULATE_MIXING ? MAX_FILL_LEVEL : 0;
+    _fillLevel = DEBUG_SIMULATE_MIXING ? MAX_FILL_LEVEL : 0;
+    this.fillStateFile = INGREDIENT_FILL_STATE_FILE_PREFIX+index;
+    String[] fillState = loadStrings(fillStateFile);
+    if (fillState == null) {
+      _fillLevel = 0;
+    } else {
+      if (fillState.length >= 1) {
+        _fillLevel = int(fillState[0]);
+        sendFillLevel(index, _fillLevel);        
+      }
+    }
   }
   
   void setSignificantPoints(Section[] sections) {
@@ -128,6 +141,16 @@ class Ingredient {
     }
     */
   }
+
+  int getFillLevel() {
+    return _fillLevel;
+  }
+
+  void setFillLevel(int level) {
+    _fillLevel = level;
+    saveStrings(fillStateFile, new String[]{str(_fillLevel)});
+  }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -47,7 +47,7 @@ void drawMaintenanceInterface() {
     noStroke();
     fill(ingredient.strokeColor);
     rect(x, y+h+3, w, 200, 0, 0, 5, 5);
-    float fillH = map(ingredient.fillLevel, 0, MAX_FILL_LEVEL, 200-6, 0);
+    float fillH = map(ingredient.getFillLevel(), 0, MAX_FILL_LEVEL, 200-6, 0);
     noStroke();
     fill(0);
     rect(x+3, y+h+6, w-6, fillH, 0, 0, 3, 3);
@@ -56,7 +56,7 @@ void drawMaintenanceInterface() {
     textSize(18);
     fill(255);
     textAlign(CENTER, TOP);
-    text(ingredient.fillLevel + "ml", x + w/2, y+h+3+200+5);
+    text(ingredient.getFillLevel() + "ml", x + w/2, y+h+3+200+5);
     
     if (i == _maint_selectedBottle) {
       stroke(0);
@@ -138,7 +138,7 @@ void _maint_confirm() {
     case SELECTING_ACTION:
       switch (_maint_selectedAction) {
         case 0: 
-          setFillLevel(_maint_selectedBottle, MAX_FILL_LEVEL);
+          sendFillLevel(_maint_selectedBottle, MAX_FILL_LEVEL);
           if (DEBUG_SIMULATE_MIXING) {
             didReceiveFillLevel(_maint_selectedBottle, MAX_FILL_LEVEL);
           }
@@ -147,7 +147,7 @@ void _maint_confirm() {
         case 1: 
           openValve(_maint_selectedBottle, CUP_SIZE);
           if (DEBUG_SIMULATE_MIXING) {
-            int level = model.ingredients[_maint_selectedBottle].fillLevel - CUP_SIZE;
+            int level = model.ingredients[_maint_selectedBottle].getFillLevel() - CUP_SIZE;
             didReceiveFillLevel(_maint_selectedBottle, level);
           }
           _maint_state = MaintenanceState.SELECTING_BOTTLE;

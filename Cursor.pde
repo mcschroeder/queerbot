@@ -78,7 +78,13 @@ Selection getSelection(int x, Model model) {
     if (x >= section.leftX && x <= section.rightX) {
       float[] amounts = new float[model.ingredients.length];
       for (int i = 0; i < model.ingredients.length; i++) {
-        amounts[i] = model.ingredients[i].getAmount(x);
+        if (x == CURSOR_WIDTH/2) {
+          amounts[i] = model.ingredients[i].getAmount(0);
+        } else if (x == SCREEN_WIDTH-CURSOR_WIDTH/2) {
+          amounts[i] = model.ingredients[i].getAmount(SCREEN_WIDTH);
+        } else {
+          amounts[i] = model.ingredients[i].getAmount(x);
+        }
       }
       return new Selection(section, amounts, x);
     }
