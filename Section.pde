@@ -15,6 +15,7 @@ class Section {
 
   // variables
   final float[] significantAmounts;  // one ml amount per ingredient
+  boolean sigAmsReloaded = false;
   final float[] historicalAverage;  
   private int _count = 0;  // how often was this section selected
   private boolean _covered = true;
@@ -32,25 +33,38 @@ class Section {
     this.rightX = leftX + sectionWidth;
     
     this.sectionStateFile = SECTION_STATE_FILE_PREFIX+index;
-    if (DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED) {
-      _covered = false;
-    } else {
-      String[] sectionState = loadStrings(sectionStateFile);
-      if (sectionState == null) {
+    String[] sectionState = loadStrings(sectionStateFile);
+    if (sectionState == null) {
+      if (DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED) {
+        _covered = false;
+      } else {
         _covered = !(index == 0 || index == numSections-1);
+      }
+    } else {
+      if (DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED) {
+        _covered = false;
       } else {
         if (sectionState.length >= 1) {
           _covered = boolean(sectionState[0]);
         }
-        if (sectionState.length >= 2) {
-          _count = int(sectionState[1]);
-        }
-        if (sectionState.length >= 3) {
-          String[] has = sectionState[2].split(",");
-          if (has.length == historicalAverage.length) { 
-            for (int i = 0; i < has.length; i++) {
-              historicalAverage[i] = float(has[i]);
-            }
+      }
+      if (sectionState.length >= 2) {
+        _count = int(sectionState[1]);
+      }
+      if (sectionState.length >= 3) {
+        String[] sigAms = sectionState[2].split(",");
+        if (sigAms.length == significantAmounts.length) { 
+          for (int i = 0; i < sigAms.length; i++) {
+            significantAmounts[i] = float(sigAms[i]);
+          }
+          sigAmsReloaded = true;
+        }          
+      }
+      if (sectionState.length >= 4 && sigAmsReloaded) {
+        String[] histAvgs = sectionState[3].split(",");
+        if (histAvgs.length == historicalAverage.length) { 
+          for (int i = 0; i < histAvgs.length; i++) {
+            historicalAverage[i] = float(histAvgs[i]);
           }
         }
       }
@@ -58,11 +72,15 @@ class Section {
   }
 
   void saveState() {
-    String has = str(historicalAverage[0]);
+    String sigAms = str(significantAmounts[0]);
+    for (int i = 1; i < significantAmounts.length; i++) {
+      sigAms += ","+str(significantAmounts[i]);
+    }    
+    String histAvgs = str(historicalAverage[0]);
     for (int i = 1; i < historicalAverage.length; i++) {
-      has += ","+str(historicalAverage[i]);
+      histAvgs += ","+str(historicalAverage[i]);
     }
-    String[] state = {str(_covered), str(_count), has};
+    String[] state = {str(_covered), str(_count), sigAms, histAvgs};
     saveStrings(sectionStateFile, state);
   }
   
@@ -84,11 +102,18 @@ class Section {
     return _count;
   }
 
+  void setSignificantAmounts(float[] amounts) {
+    for (int i = 0; i < significantAmounts.length; i++) {
+      significantAmounts[i] = amounts[i];
+    }
+    saveState();
+  }
+
   void updateHistoricalAverage(float[] selectedAmounts) {
     for (int i = 0; i < historicalAverage.length; i++) {
-      print("hist="+historicalAverage[i]);
+      // print("hist="+historicalAverage[i]);
       historicalAverage[i] = (selectedAmounts[i] + _count * historicalAverage[i])/(_count + 1);
-      println(" a="+selectedAmounts[i]+" hist'="+historicalAverage[i]);
+      // println(" a="+selectedAmounts[i]+" hist'="+historicalAverage[i]);
     }
     saveState();
   }

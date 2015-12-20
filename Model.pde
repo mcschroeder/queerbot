@@ -25,8 +25,8 @@ class Model {
       sectionsByName.put(sections[i].name, sections[i]);
       for (int j = 0; j < ingredients.length; j++) {
         TableRow row = table.getRow(j);
-        sections[i].significantAmounts[j] = row.getFloat(i);
-        if (sections[i].getCount() == 0) {
+        if (sections[i].sigAmsReloaded == false) {
+          sections[i].significantAmounts[j] = row.getFloat(i);
           sections[i].historicalAverage[j] = sections[i].significantAmounts[j];
         }
         if (ingredients[j] == null) { 
@@ -35,6 +35,7 @@ class Model {
           ingredients[j].scaleFactor = row.getFloat("scale");
         }
       }
+      sections[i].saveState();
     }
     for (Ingredient ingredient : ingredients) {
       ingredient.setSignificantPoints(sections);
@@ -101,6 +102,9 @@ class Model {
     if (TRAIT_UPDATES_ENABLED) {
       updateTraits(result.section);
     }
+    for (Ingredient ingredient : ingredients) {
+      ingredient.setSignificantPoints(sections);
+    }
     
     return result;
   }
@@ -109,13 +113,15 @@ class Model {
   float SPF = 0.01;  // sub plasticity
 
   void updateTraits(Section dom) {
+    float[] newSigAms = new float[dom.significantAmounts.length];
     for (int i = 0; i < dom.significantAmounts.length; i++) {
       float sigAmount = dom.significantAmounts[i];
       float histAvg = dom.historicalAverage[i];
       float sigAmount_next = sigAmount + (histAvg-sigAmount)*PF;
       //println("a="+sigAmount+" h="+histAvg+" a'="+sigAmount_next);
-      dom.significantAmounts[i] = sigAmount_next;
+      newSigAms[i] = sigAmount_next;
     }
+    dom.setSignificantAmounts(newSigAms);
     
     for (Section sub :  model.sections) {
       if (dom == sub) continue;
@@ -124,9 +130,10 @@ class Model {
         float subSigAmount = sub.significantAmounts[i];
         float domSigAmount = dom.significantAmounts[i];
         float subSigAmount_next = subSigAmount + (domSigAmount-subSigAmount)*SPF*r;
-        sub.significantAmounts[i] = subSigAmount_next;
+        newSigAms[i] = subSigAmount_next;
         //println("sub_a="+subSigAmount+" dom_a="+domSigAmount+" sub_a'="+subSigAmount_next);
       }
+      sub.setSignificantAmounts(newSigAms);
     }
       
     for (Ingredient ingredient : model.ingredients) {
