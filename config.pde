@@ -2,7 +2,7 @@ final boolean OUT_OF_ORDER = false;
 
 final boolean DEBUG_SHOW_FPS = false;
 final boolean DEBUG_LOG_RULES = false;
-boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = false;
+boolean DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = true;
 boolean DEBUG_SIMULATE_MIXING = true;
 boolean DEBUG_SIMULATE_HARDWARE = true;
 final boolean DEBUG_LOG_HARDWARE = true;
@@ -20,6 +20,7 @@ final int CONFIRM_BUTTON_ID = 5;
 final int MAINTENANCE_BUTTON_ID = 3;
 
 final int SELECTION_HISTORY_SIZE = 10;
+final boolean TRAIT_UPDATES_ENABLED = true;
 
 final color BACKGROUND_COLOR = color(0);
 final color INGREDIENT_TEXT_COLOR = color(0);

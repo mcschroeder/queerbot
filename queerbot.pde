@@ -25,7 +25,6 @@ void settings() {
     fullScreen();
     DEBUG_SIMULATE_HARDWARE = false;
     DEBUG_SIMULATE_MIXING = false;
-    DEBUG_BEGIN_WITH_ALL_SECTIONS_UNCOVERED = false;
   } else {
     size(SCREEN_WIDTH, SCREEN_HEIGHT);
   }
@@ -39,13 +38,7 @@ void setup() {
     gotoError("OUT OF ORDER");
     return;
   }
-    
-  model = new Model("ingredients.csv", "input.rules", "cover.rules");
-  cursor1 = new Cursor(model);
-  cursor2 = new Cursor(model);
-  cursor2.hidden = true;
-  activeCursor = cursor1;
-  
+      
   if (DEBUG_LOG_HARDWARE) {
     hwLogWriter = createWriter("log/serial.log");
   }
@@ -59,7 +52,13 @@ void setup() {
       gotoError(e.getLocalizedMessage());      
       return;
     }
-  }  
+  }
+
+  model = new Model("ingredients.csv", "input.rules", "cover.rules");
+  cursor1 = new Cursor(model);
+  cursor2 = new Cursor(model);
+  cursor2.hidden = true;
+  activeCursor = cursor1; 
   
   state = QueerbotState.SELECTING;
 }

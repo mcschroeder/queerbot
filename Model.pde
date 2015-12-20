@@ -98,39 +98,37 @@ class Model {
     
     updateRangesForUncoveredSections(CURSOR_WIDTH/2);
     
-    // TODO
-    // updateTraits();
+    if (TRAIT_UPDATES_ENABLED) {
+      updateTraits(result.section);
+    }
     
     return result;
   }
 
-  int t = 0;
-  float p = 0.1;
-  void updateTraits() {
-    t = t + 1;
-    // if (t % 60 != 0) return;
-    for (Section dom : model.sections) {
-      for (int i = 0; i < dom.significantAmounts.length; i++) {
-        float sigAmount = dom.significantAmounts[i];
-        float histAvg = dom.historicalAverage[i];
-        float sigAmount_next = sigAmount + (histAvg-sigAmount)*p;
-        println("a="+sigAmount+" h="+histAvg+" a'="+sigAmount_next);
-        dom.significantAmounts[i] = sigAmount_next;
-      }
-      /*
-      for (Section sub :  model.sections) {
-        if (dom == sub) continue;
-        float r = random(-1,1);
-        for (int i = 0; i < sub.significantAmounts.length; i++) {
-          float subSigAmount = sub.significantAmounts[i];
-          float domSigAmount = dom.significantAmounts[i];
-          float subSigAmount_next = subSigAmount + (domSigAmount-subSigAmount)*p*r;
-          sub.significantAmounts[i] = subSigAmount_next;
-          println("sub_a="+subSigAmount+" dom_a="+domSigAmount+" sub_a'="+subSigAmount_next);
-        }
-      }
-      */
+  float PF = 0.1;  // plasticity factor
+  float SPF = 0.01;  // sub plasticity
+
+  void updateTraits(Section dom) {
+    for (int i = 0; i < dom.significantAmounts.length; i++) {
+      float sigAmount = dom.significantAmounts[i];
+      float histAvg = dom.historicalAverage[i];
+      float sigAmount_next = sigAmount + (histAvg-sigAmount)*PF;
+      //println("a="+sigAmount+" h="+histAvg+" a'="+sigAmount_next);
+      dom.significantAmounts[i] = sigAmount_next;
     }
+    
+    for (Section sub :  model.sections) {
+      if (dom == sub) continue;
+      float r = random(-1,1);
+      for (int i = 0; i < sub.significantAmounts.length; i++) {
+        float subSigAmount = sub.significantAmounts[i];
+        float domSigAmount = dom.significantAmounts[i];
+        float subSigAmount_next = subSigAmount + (domSigAmount-subSigAmount)*SPF*r;
+        sub.significantAmounts[i] = subSigAmount_next;
+        //println("sub_a="+subSigAmount+" dom_a="+domSigAmount+" sub_a'="+subSigAmount_next);
+      }
+    }
+      
     for (Ingredient ingredient : model.ingredients) {
       ingredient.setSignificantPoints(model.sections);
     }
